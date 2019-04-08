@@ -1,0 +1,443 @@
+#### Unstack files ###########
+#### LRSS 01.04.2019 #########
+
+# Esses nomes devem ser iguais aos nomes dos folders e dos arquivos referentes, ou seja, devem apontar para eles mesmos!
+df = data.frame("Key" =c(seq(1:3)),"Value" = c("AM","CA","CE"))
+Map_type = data.frame("Map" = c("Flora_Ameacada","Mapbiomas_FIM"),"index" = c(seq(1:2))) 
+Stack_type = data.frame("Stack" = c("stack_biodiversidade","stack_MP"),"index" = c(seq(1:2)))  
+
+#Save them in the place where DinamicaEGO will find them
+write.csv(df,"C:\\Users\\iis\\Desktop\\Teste\\df.csv")
+write.csv(Map_type,"C:\\Users\\iis\\Desktop\\Teste\\map_folder.csv")
+write.csv(Stack_type,"C:\\Users\\iis\\Desktop\\Teste\\stacks.csv")
+
+# Load all this code within DinamicaEGO software and then run the last line of this code where system() function is located. 
+Important: The last line of the code calls dinamica ego ".bat" file therefore you must provide the correct directory!
+
+<?xml version="1.0" standalone="yes" ?>
+<script>
+    <property key="dff.date" value="2019-Apr-03 17:57:31" />
+    <property key="dff.version" value="4.0.11.20181011" />
+    <property key="submodel.import" value='ListFilenamesInFolder { { &quot;folder&quot; : Folder, &quot;fileExtension&quot; : String } { &quot;searchSubFoldersRecursively&quot; : BooleanValue } { &quot;files&quot; : Table } }' />
+    <containerfunctor name="For">
+        <property key="dff.functor.alias" value="Controla tipo de mapa da Vez" />
+        <property key="dff.functor.comment" value="Flora ou MP" />
+        <inputport name="firstIterationStep">1</inputport>
+        <inputport name="lastIterationStep" peerid="v32" />
+        <inputport name="stepIncrement">1</inputport>
+        <internaloutputport name="step" id="v1" />
+        <functor name="Step">
+            <property key="dff.functor.alias" value="step3843" />
+            <inputport name="step" peerid="v1" />
+            <outputport name="step" id="v2" />
+        </functor>
+        <functor name="GetTableValue">
+            <property key="dff.functor.alias" value="Map_Type" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="table" peerid="v31" />
+            <inputport name="keys" peerid="v2" />
+            <inputport name="column">2</inputport>
+            <inputport name="valueIfNotFound">.none</inputport>
+            <outputport name="result" id="v3" />
+        </functor>
+        <functor name="GetTableValue">
+            <property key="dff.functor.alias" value="Stack da vez" />
+            <property key="dff.functor.comment" value="Stack da vez" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="table" peerid="v37" />
+            <inputport name="keys" peerid="v2" />
+            <inputport name="column">2</inputport>
+            <inputport name="valueIfNotFound">.none</inputport>
+            <outputport name="result" id="v4" />
+        </functor>
+        <containerfunctor name="For">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Controla Bioma da Vez" />
+            <inputport name="firstIterationStep">1</inputport>
+            <inputport name="lastIterationStep" peerid="v35" />
+            <inputport name="stepIncrement">1</inputport>
+            <internaloutputport name="step" id="v5" />
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3677" />
+                <inputport name="map" peerid="v7" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v6" />
+            </functor>
+            <functor name="LoadMap">
+                <property key="dff.functor.alias" value="loadMap2878" />
+                <inputport name="filename" peerid="v29" />
+                <inputport name="nullValue">.none</inputport>
+                <inputport name="loadAsSparse">.no</inputport>
+                <inputport name="suffixDigits">0</inputport>
+                <inputport name="step" peerid="v5" />
+                <inputport name="workdir">.none</inputport>
+                <outputport name="map" id="v7" />
+            </functor>
+            <functor name="Step">
+                <property key="dff.functor.alias" value="step3859" />
+                <inputport name="step" peerid="v5" />
+                <outputport name="step" id="v8" />
+            </functor>
+            <functor name="GetTableValue">
+                <property key="dff.functor.alias" value="Nomes dos Biomas" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="table" peerid="v34" />
+                <inputport name="keys" peerid="v8" />
+                <inputport name="column">2</inputport>
+                <inputport name="valueIfNotFound">.none</inputport>
+                <outputport name="result" id="v9" />
+            </functor>
+            <functor name="GetTableValue">
+                <property key="dff.functor.alias" value="Nomes dos Biomas para salvar" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="table" peerid="v38" />
+                <inputport name="keys" peerid="v8" />
+                <inputport name="column">2</inputport>
+                <inputport name="valueIfNotFound">.none</inputport>
+                <outputport name="result" id="v10" />
+            </functor>
+            <functor name="ListFilenamesInFolder">
+                <property key="dff.functor.alias" value="listFilenamesInFolder2866" />
+                <property key="viewer.files" value="yes" />
+                <inputport name="folder" peerid="v30" />
+                <inputport name="fileExtension">&quot;tif&quot;</inputport>
+                <inputport name="searchSubFoldersRecursively">.no</inputport>
+                <outputport name="files" id="v11" />
+            </functor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Itera a quantidade de elementos contendo no stack..." />
+                <property key="dff.functor.comment" value="Procura, par a par, o elemento no folder de biodiversidade" />
+                <inputport name="expression">[&#x0A;    t1[&quot;layers&quot;]&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v12" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3680" />
+                    <inputport name="table" peerid="v6" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="Repeat">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="repeat2816" />
+                <inputport name="iterations" peerid="v12" />
+                <internaloutputport name="step" id="v13" />
+                <functor name="Step">
+                    <property key="dff.functor.alias" value="step2817" />
+                    <inputport name="step" peerid="v13" />
+                    <outputport name="step" id="v14" />
+                </functor>
+                <functor name="ExtractMapLayer">
+                    <property key="dff.functor.alias" value="extractMapLayer2879" />
+                    <inputport name="map" peerid="v7" />
+                    <inputport name="layerIndexOrName" peerid="v14" />
+                    <outputport name="layer" id="v15" />
+                </functor>
+                <functor name="ExtractMapAttributes">
+                    <property key="dff.functor.alias" value="extractMapAttributes2734" />
+                    <inputport name="map" peerid="v28" />
+                    <inputport name="extractDynamicAttributes">.yes</inputport>
+                    <inputport name="extractStatisticalAttributes">.yes</inputport>
+                    <outputport name="attributes" id="v16" />
+                </functor>
+                <functor name="ExtractMapAttributes">
+                    <property key="dff.functor.alias" value="extractMapAttributes2735" />
+                    <inputport name="map" peerid="v15" />
+                    <inputport name="extractDynamicAttributes">.yes</inputport>
+                    <inputport name="extractStatisticalAttributes">.yes</inputport>
+                    <outputport name="attributes" id="v17" />
+                </functor>
+                <functor name="GetTableValue">
+                    <property key="dff.functor.alias" value="getTableValue3025" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="table" peerid="v11" />
+                    <inputport name="keys" peerid="v14" />
+                    <inputport name="column">2</inputport>
+                    <inputport name="valueIfNotFound">.none</inputport>
+                    <outputport name="result" id="v18" />
+                </functor>
+                <functor name="LoadMap">
+                    <property key="dff.functor.alias" value="loadMap3079" />
+                    <property key="viewer.map" value="yes" />
+                    <inputport name="filename" peerid="v20" />
+                    <inputport name="nullValue">.none</inputport>
+                    <inputport name="loadAsSparse">.no</inputport>
+                    <inputport name="suffixDigits">0</inputport>
+                    <inputport name="step" peerid="v13" />
+                    <inputport name="workdir">.none</inputport>
+                    <outputport name="map" id="v19" />
+                </functor>
+                <functor name="ExtractStructString">
+                    <property key="dff.functor.alias" value="extractStructString3324" />
+                    <property key="viewer.string" value="yes" />
+                    <inputport name="struct" peerid="v22" />
+                    <inputport name="name">&quot;nome&quot;</inputport>
+                    <outputport name="string" id="v20" />
+                </functor>
+                <containerfunctor name="CalculateValue">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Check whether maps are equal (Conditional)" />
+                    <property key="dff.functor.comment" value="Conditional" />
+                    <inputport name="expression">[&#x0A;    if t1[&quot;cellSum&quot;] - t2[&quot;cellSum&quot;] = 0 then&#x0A;        1&#x0A;    else &#x0A;        0&#x0A;]</inputport>
+                    <inputport name="defaultValue">.none</inputport>
+                    <outputport name="result" id="v21" />
+                    <functor name="NumberTable">
+                        <property key="dff.functor.alias" value="numberTable2738" />
+                        <inputport name="table" peerid="v17" />
+                        <inputport name="tableNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberTable">
+                        <property key="dff.functor.alias" value="numberTable2739" />
+                        <inputport name="table" peerid="v16" />
+                        <inputport name="tableNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateRExpression">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="calculateRExpression3322" />
+                    <inputport name="expression">&quot;nome = s1 #paste0(\&quot;D:\\PPBio2.0\\stack_separacao\\CA\\separastack\\Flora_Ameacada\\\&quot;,s1)&#x0A;outputString(\&quot;nome\&quot;,nome)&quot;</inputport>
+                    <inputport name="treatWarningAsErrors">.no</inputport>
+                    <outputport name="result" id="v22" />
+                    <functor name="NumberString">
+                        <property key="dff.functor.alias" value="numberString3325" />
+                        <inputport name="value" peerid="v18" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="IfThen">
+                    <property key="dff.functor.alias" value="ifThen2755" />
+                    <inputport name="condition" peerid="v21" />
+                    <functor name="SaveMap">
+                        <property key="dff.functor.alias" value="saveMap3080" />
+                        <inputport name="map" peerid="v15" />
+                        <inputport name="filename" peerid="v23" />
+                        <inputport name="suffixDigits">0</inputport>
+                        <inputport name="step" peerid="v13" />
+                        <inputport name="useCompression">.yes</inputport>
+                        <inputport name="workdir">.none</inputport>
+                        <inputport name="ignoreCostlySparseCategories">.yes</inputport>
+                    </functor>
+                    <functor name="ExtractStructString">
+                        <property key="dff.functor.alias" value="extractStructString3324" />
+                        <property key="viewer.string" value="yes" />
+                        <inputport name="struct" peerid="v24" />
+                        <inputport name="name">&quot;nome&quot;</inputport>
+                        <outputport name="string" id="v23" />
+                    </functor>
+                    <containerfunctor name="CalculateRExpression">
+                        <property key="dff.container.collapsed" value="no" />
+                        <property key="dff.functor.alias" value="calculateRExpression3322" />
+                        <property key="viewer.result" value="yes" />
+                        <inputport name="expression">&quot;s1 = gsub(\&quot;.*/\&quot;,\&quot;\&quot;,s1)&#x0A;s1.f = gsub(\&quot;\\..*\&quot;,\&quot;\&quot;,s1)&#x0A;&#x0A;nome = paste0(\&quot;D:\\PPBio2.0\\\&quot;,s3,\&quot;\\processados\\atuais\\unstack\\\&quot;,s3,\&quot;_\&quot;,\&quot;1km_Albers_\&quot;,s1,\&quot;.tif\&quot;)&#x0A;outputString(\&quot;nome\&quot;,nome)&quot;</inputport>
+                        <inputport name="treatWarningAsErrors">.no</inputport>
+                        <outputport name="result" id="v24" />
+                        <functor name="NumberString">
+                            <property key="dff.functor.alias" value="Especie" />
+                            <inputport name="value" peerid="v18" />
+                            <inputport name="valueNumber">1</inputport>
+                        </functor>
+                        <functor name="NumberString">
+                            <property key="dff.functor.alias" value="Bioma" />
+                            <inputport name="value" peerid="v9" />
+                            <inputport name="valueNumber">2</inputport>
+                        </functor>
+                        <functor name="NumberString">
+                            <property key="dff.functor.alias" value="Nome do bioma para salvar" />
+                            <inputport name="value" peerid="v10" />
+                            <inputport name="valueNumber">3</inputport>
+                        </functor>
+                    </containerfunctor>
+                </containerfunctor>
+                <containerfunctor name="IfNotThen">
+                    <property key="dff.functor.alias" value="ifNotThen3622" />
+                    <inputport name="condition" peerid="v21" />
+                    <functor name="SaveTextFile">
+                        <property key="dff.functor.alias" value="saveTextFile3623" />
+                        <inputport name="text" peerid="v26" />
+                        <inputport name="filename" peerid="v26" />
+                        <inputport name="suffixDigits">0</inputport>
+                        <inputport name="step" peerid="v13" />
+                        <inputport name="workdir">.none</inputport>
+                    </functor>
+                    <functor name="ExtractStructString">
+                        <property key="dff.functor.alias" value="extractStructString3324" />
+                        <inputport name="struct" peerid="v27" />
+                        <inputport name="name">&quot;nome&quot;</inputport>
+                        <outputport name="string" id="v25" />
+                    </functor>
+                    <containerfunctor name="CreateString">
+                        <property key="dff.container.collapsed" value="no" />
+                        <property key="dff.functor.alias" value="createString3625" />
+                        <inputport name="format">&quot;&lt;s1&gt;_error.txt&quot;</inputport>
+                        <outputport name="result" id="v26" />
+                        <functor name="NumberValue">
+                            <property key="dff.functor.alias" value="numberValue3627" />
+                            <inputport name="value" peerid="v14" />
+                            <inputport name="valueNumber">1</inputport>
+                        </functor>
+                        <functor name="NumberString">
+                            <property key="dff.functor.alias" value="numberString3765" />
+                            <inputport name="value" peerid="v25" />
+                            <inputport name="valueNumber">1</inputport>
+                        </functor>
+                    </containerfunctor>
+                    <containerfunctor name="CalculateRExpression">
+                        <property key="dff.container.collapsed" value="no" />
+                        <property key="dff.functor.alias" value="calculateRExpression3322" />
+                        <inputport name="expression">&quot;nome = paste0(s1,\&quot;_\&quot;,s2,\&quot;.txt\&quot;) &#x0A;#paste0(\&quot;D:\\PPBio2.0\\\&quot;,s2,\&quot;\\\&quot;,s1,\&quot;.txt\&quot;)&#x0A;&#x0A;outputString(\&quot;nome\&quot;,nome)&quot;</inputport>
+                        <inputport name="treatWarningAsErrors">.no</inputport>
+                        <outputport name="result" id="v27" />
+                        <functor name="NumberString">
+                            <property key="dff.functor.alias" value="numberString3325" />
+                            <inputport name="value" peerid="v18" />
+                            <inputport name="valueNumber">1</inputport>
+                        </functor>
+                        <functor name="NumberString">
+                            <property key="dff.functor.alias" value="numberString4084" />
+                            <inputport name="value" peerid="v10" />
+                            <inputport name="valueNumber">2</inputport>
+                        </functor>
+                    </containerfunctor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="calculateMap3766" />
+                    <inputport name="expression">[&#x0A;    if isNull(i2) then&#x0A;        null&#x0A;    else &#x0A;        i1&#x0A;]</inputport>
+                    <inputport name="cellType">.int32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v28" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3767" />
+                        <inputport name="map" peerid="v19" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3768" />
+                        <inputport name="map" peerid="v15" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+            <containerfunctor name="CreateString">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Path for Stacks" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="format">&quot;D:/PPBio2.0/stack_separacao/&lt;s1&gt;/separastack/&lt;s2&gt;.tif&quot;</inputport>
+                <outputport name="result" id="v29" />
+                <functor name="NumberString">
+                    <property key="dff.functor.alias" value="numberString2987" />
+                    <inputport name="value" peerid="v9" />
+                    <inputport name="valueNumber">1</inputport>
+                </functor>
+                <functor name="NumberString">
+                    <property key="dff.functor.alias" value="numberString3871" />
+                    <inputport name="value" peerid="v4" />
+                    <inputport name="valueNumber">2</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="CreateString">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="createString2843" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="format">&quot;D:\\PPBio2.0\\stack_separacao\\&lt;s1&gt;\\separastack\\&lt;s2&gt;&quot;</inputport>
+                <outputport name="result" id="v30" />
+                <functor name="NumberString">
+                    <property key="dff.functor.alias" value="numberString2987" />
+                    <inputport name="value" peerid="v9" />
+                    <inputport name="valueNumber">1</inputport>
+                </functor>
+                <functor name="NumberString">
+                    <property key="dff.functor.alias" value="numberString3233" />
+                    <inputport name="value" peerid="v3" />
+                    <inputport name="valueNumber">2</inputport>
+                </functor>
+            </containerfunctor>
+        </containerfunctor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.functor.alias" value="Controla Tipo de Mapa" />
+        <functor name="LoadTable">
+            <property key="dff.functor.alias" value="loadTable2919" />
+            <inputport name="filename">&quot;C:/Users/iis/Desktop/Teste/map_folder.csv&quot;</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="table" id="v31" />
+        </functor>
+        <functor name="ExtractStructNumber">
+            <property key="dff.functor.alias" value="extractStructNumber5726" />
+            <property key="viewer.number" value="yes" />
+            <inputport name="struct" peerid="v33" />
+            <inputport name="name">&quot;a&quot;</inputport>
+            <outputport name="number" id="v32" />
+        </functor>
+        <containerfunctor name="CalculateRExpression">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="List Size" />
+            <inputport name="expression">&quot;a = nrow(t1)&#x0A;outputDouble(\&quot;a\&quot;,a)&quot;</inputport>
+            <inputport name="treatWarningAsErrors">.no</inputport>
+            <outputport name="result" id="v33" />
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="numberTable5725" />
+                <inputport name="table" peerid="v31" />
+                <inputport name="tableNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.functor.alias" value="Controla Bioma da Vez" />
+        <functor name="LoadTable">
+            <property key="dff.functor.alias" value="loadTable2919" />
+            <inputport name="filename">&quot;C:/Users/iis/Desktop/Teste/df.csv&quot;</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="table" id="v34" />
+        </functor>
+        <functor name="ExtractStructNumber">
+            <property key="dff.functor.alias" value="extractStructNumber5726" />
+            <property key="viewer.number" value="yes" />
+            <inputport name="struct" peerid="v36" />
+            <inputport name="name">&quot;a&quot;</inputport>
+            <outputport name="number" id="v35" />
+        </functor>
+        <containerfunctor name="CalculateRExpression">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="List Size" />
+            <inputport name="expression">&quot;a = nrow(t1)&#x0A;outputDouble(\&quot;a\&quot;,a)&quot;</inputport>
+            <inputport name="treatWarningAsErrors">.no</inputport>
+            <outputport name="result" id="v36" />
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="numberTable5725" />
+                <inputport name="table" peerid="v34" />
+                <inputport name="tableNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.functor.alias" value="Controla Stack da Vez" />
+        <functor name="LoadTable">
+            <property key="dff.functor.alias" value="loadTable2919" />
+            <inputport name="filename">&quot;C:/Users/iis/Desktop/Teste/stacks.csv&quot;</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="table" id="v37" />
+        </functor>
+        <functor name="LoadTable">
+            <property key="dff.functor.alias" value="Tabela para output" />
+            <inputport name="filename">&quot;../df.csv&quot;</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="table" id="v38" />
+        </functor>
+    </containerfunctor>
+</script>
+
+
+#################
+system("D://PPBio2.0/modelos/Dinamica-R/unstack.bat") # Calls Dinamica
