@@ -1,0 +1,63 @@
+########### By Lucas Rodrigues 02/03/2019 ###############
+########## Assert Rasters ###############################
+#########################################################
+
+library(Dinamica)
+library(tidyverse)
+
+# Create table with regions of verification
+ df = data.frame(index = c("Amazonia","Catinga","Cerrado",
+                           "MataAtlantica","Pampas","Pantanal"),
+                 value = c(seq(1,6,1)))
+# Save it
+write.csv(df,"D:\\PPBio2.0\\modelos\\Dinamica-R\\biomes.csv")
+
+#Runs Dinamica EGO
+system("C://Users/iis/Desktop/assert.bat")
+
+receivedTable = read.csv("C://Users//iis/Desktop/Lucas/1-Scripts/DinamicaEGO/table.csv", header =T)
+
+receivedTable$X = NULL
+
+receivedTable$Names = c("Lines","Columns","Cells","Layers","Cell Height", 
+                        "Cell Width", "Cell Area","Null Cell","NonNull Cell",
+                        "minCell", "maxCell","Cell Sum", "MeanCell",
+                        "Variance", "Std", "Mode","Median","Unique Cells",
+                        "Cell Type", "NullValue","Reg.Coord Y", "Reg.Coord X",
+                        "Reg.Cell Y", "Reg.Cell x", "Rotation Y", "Rotation X",
+                        "OriginalCellHeight", "OriginalCellWidth")
+
+receivedTable = receivedTable[c(1,2,3,5,4)]
+
+assert1 = data.frame()
+for (i in 1:length(unique(receivedTable$Biome.))) {
+  tmp = subset(receivedTable, Biome. == i)
+  tmp$Bioma = as.character(df$index[[i]])
+  assert1 = rbind(assert1,tmp)
+
+  
+  
+  #receivedTable = receivedTable[c(5,1,2,3,4)] # Different 
+}
+
+assert1[1] = NULL
+assert1 = assert1[c(5,1,2,3,4)]
+
+receivedTable.spread = assert1 %>%
+   spread(MapType.,Value) 
+ 
+assert = data.frame()
+for (i in 1:length(unique(receivedTable.spread$Bioma))) {
+ # print(i)
+    
+    t1 = subset(receivedTable.spread, Bioma == df$index[i] )
+  
+  
+  t1$error = apply(t1[,-c(1,2,3)],1,function(x){
+    ifelse(length(unique(x)) > 1,"sim", "não")}) 
+    assert = rbind(assert,t1)
+  
+}
+
+test = assert[,-c(2,5:length(assert) - 1)]
+################################################################################ 
