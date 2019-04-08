@@ -1,0 +1,147 @@
+# Create Master File ###########
+# 08.04.2019 ###################
+# Lucas RSS ####################
+
+# Load Libs
+library(ggplot2)
+library(tidyverse)
+library(gridExtra)
+
+
+# Load Files 
+tmp = list.files("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\variable_effects",pattern="*.csv",
+                 full.names = TRUE)
+myfiles = lapply(tmp, read.csv)
+
+agr = myfiles[[1]] # Agriculture
+bioma = myfiles[[2]] # Biome
+def = myfiles[[3]] # Deforestation
+fire = myfiles[[4]] # Fire
+frt = myfiles[[5]] # Frontier Age
+mcwd = myfiles[[6]] # MCWD
+sur = myfiles[[7]] # Surronding Agriculture
+
+agr$X = NULL
+bioma$X = NULL
+def$X = NULL
+fire$X = NULL
+frt$X = NULL
+mcwd$X = NULL
+sur$X = NULL
+
+# Change necessary colnames
+colnames(mcwd)[3] = "Cumulative WD"
+colnames(fire)[3] = "Fire"
+colnames(def)[3] = "Deforestation"
+
+# Check Variable Distributions
+par(mfrow = c(3,3))
+hist(agr$AgriculturaKm2)
+hist(bioma$Biome)
+hist(def$Deforestation)
+hist(fire$Fire)
+hist(frt$FrontierAge)
+hist(mcwd$Cumulative WD)
+hist(sur$AgriculturaEntornoFogo)
+
+# Create master file
+fire = fire[with(fire,order(fire$Municipality.)),]
+sur = sur[with(sur,order(sur$Municipality.)),]
+agr = agr[with(agr,order(agr$Municipality.)),]
+frt = frt[with(frt,order(frt$Municipality.)),]
+mcwd = mcwd[with(mcwd, order(mcwd$Municipality.)),] 
+bioma = bioma[with(bioma, order(bioma$Municipality.)),] 
+def = def[with(def, order(def$Municipality.)),]
+
+master = cbind(fire,agr$AgriculturaKm2,frt$FrontierAge,sur$AgriculturaEntornoFogo,
+               mcwd$`Cumulative WD`,def$Deforestation, bioma$Biome)
+
+master = master %>%
+  mutate(Age_factor = ifelse(master$`frt$FrontierAge` >12 & master$`frt$FrontierAge` <=16,"Oldest [13-16 years]",
+                             ifelse(master$`frt$FrontierAge` >8 & master$`frt$FrontierAge` <=12,"Old [9-12 years]",
+                                    ifelse((master$`frt$FrontierAge` >4 & master$`frt$FrontierAge` <=8),"New [5-8 years]",
+                                           ifelse(master$`frt$FrontierAge` >=0 & master$`frt$FrontierAge` <=4,"Newst [Current-4 years]",
+                                                  master$`frt$FrontierAge`)))),
+         Biome_factor = ifelse(master$`bioma$Biome` ==0,"Amz",
+                               ifelse(master$`bioma$Biome` == 1,"Cer",
+                                      ifelse((master$`bioma$Biome` > 0 & master$`bioma$Biome` < 1),"Amz-Cer",
+                                             master$`bioma$Biome`))))
+
+
+colnames(master) = c("Year","Municipality","Fire","Agricultural Area","Frontier Age",
+                     "Surronding Agriculture","Mcwd","Deforestation","Biome",
+                     "Frontier Age (Factor)","Biome (Factor)")
+
+# Subset master index over 45% Percentil
+master_sub = subset(master,master$`Agricultural Area` > 51.9)
+
+write.csv(master,"D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\master.csv")
+
+#Visualize Results
+
+p1 = ggplot(master_sub,aes(Deforestation,Fire,colour = as.factor(`Frontier Age (Factor)`))) +
+  geom_point(alpha = 1/10) + geom_smooth(se = F) +
+  geom_smooth(se = F, method = "lm", linetype = "dashed", lwd = 0.6) +
+  scale_color_manual(values=c("red","blue","orange","purple")) +
+  labs(title = "Fire with cut-off", x = "Deforestation [Cells]", y = "Fire\n Count",
+       color = "Frontier Age")+  theme_light(base_size = 18) +
+  theme(legend.position = c(0.14, 0.8)) + facet_wrap(as.factor(master_sub$`Biome (Factor)`))
+
+p2 = ggplot(master_sub,aes(master_sub$`Surronding Agriculture`,master_sub$Fire, colour = as.factor(master_sub$`Frontier Age (Factor)`))) +
+  geom_point(alpha = 1/10) + geom_smooth(se = F) + ylim(c(0,10000)) +
+  geom_smooth(se = F, method = "lm", linetype = "dashed", lwd = 0.6) +
+  scale_color_manual(values=c("red","blue","orange","purple")) +
+  labs(title = "Fire with cut-off", x = "Agricultural Area within\n 10 km radius from ignition source [km2]", y = "Fire\n Count",
+       color = "Frontier Age")+  theme_light(base_size = 18) +
+  theme(legend.position = c(0.14, 0.8)) + facet_wrap(as.factor(master_sub$`Biome (Factor)`))
+  
+  p3 = ggplot(master_sub,aes(Mcwd,Fire,colour = as.factor(`Frontier Age (Factor)`))) +
+  geom_point(alpha = 1/10) + geom_smooth(se = F) +
+  geom_smooth(se = F, method = "lm", linetype = "dashed", lwd = 0.6) +
+  scale_color_manual(values=c("red","blue","orange","purple")) +
+  labs(title = "Fire with cut-off", x = "Mcwd [mm]", y = "Fire\n Count",
+       color = "Frontier Age")+  theme_light(base_size = 18) +
+  theme(legend.position = c(0.14, 0.8)) + facet_wrap(as.factor(master_sub$`Biome (Factor)`))
+
+p4 = ggplot(master_sub,aes(`Agricultural Area`,Fire,colour = as.factor(`Frontier Age (Factor)`))) +
+  geom_point(alpha = 1/10) + geom_smooth(se = F) +
+  geom_smooth(se = F, method = "lm", linetype = "dashed", lwd = 0.6) +
+  scale_color_manual(values=c("red","blue","orange","purple")) +
+  labs(title = "Fire with cut-off", x = "Agricultural Area [km2]", y = "Fire\n Count",
+       color = "Frontier Age")+  theme_light(base_size = 18) +
+  theme(legend.position = c(0.14, 0.8)) + facet_wrap(as.factor(master_sub$`Biome (Factor)`))
+  
+  # Save them
+
+tiff(paste0("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\figures\\p2.tiff"), width = 14, height = 8, units = 'in', res = 150, compression = 'none')
+p2 # Notice we have to select the plot explicitly
+dev.off()
+
+##############################################
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
