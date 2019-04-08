@@ -1,3 +1,7 @@
+df = data.frame(index = c("Amazonia","Caatinga","Cerrado",
+                          "MataAtlantica","Pampa","Pantanal"),
+                value = c(seq(1,6,1)))
+
 
 This is the Dinamica EGO code you must load within DinamicaEGO environment to call it via system() function within R
 <?xml version="1.0" standalone="yes" ?>
@@ -236,3 +240,13 @@ This is the Dinamica EGO code you must load within DinamicaEGO environment to ca
         <inputport name="workdir">.none</inputport>
     </functor>
 </script>
+
+
+system("C://Users/iis/Desktop/maxvalue.bat") # Call DINAMICA EGO
+
+t1 = read.csv("C://Users//iis/Desktop/Lucas/1-Scripts/DinamicaEGO/maxvalues.csv", header =T)
+t1$X = NULL
+
+t1.f = cbind(Biome = df,MaxValue = t1)
+
+t1.f[,2:3] = NULL
