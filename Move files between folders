@@ -1,0 +1,49 @@
+# Check whether flora endemica rasters exists in Table
+
+# Load tabela de especies----------------------------------------------------------------------
+t1 = read.csv("C:\\Users\\iis\\Downloads\\Lista_consulta_FLORA_240918_Lara270818.csv")
+t1.tmp = t1[,c(1,6,12)]
+#t1.tmp = subset(t1.tmp, Nova_class_ve == "Ameacada_&_Endemica") 
+t1.tmp = t1.tmp[complete.cases(t1.tmp), ] # Remove NA
+# Remove duplicates tabela de especies----------------------------------------------------
+t1.tmp = unique(t1.tmp) 
+# Funcao ----------------------------------------------------------------------------------------
+my.file.rename <- function(from, to) {
+  todir <- dirname(to)
+  if (!isTRUE(file.info(todir)$isdir)) dir.create(todir, recursive=TRUE)
+  file.rename(from = from,  to = to)
+}
+t1.tmp = subset(t1.tmp,t1.tmp$Nova_class_ve == "Ameacada")
+
+
+# Lista os arquivos de raster de especies-------------------------------------------------------
+A.E = list.files(paste0("C:\\Users\\iis\\Desktop\\Teste\\debug_especies\\",
+                        "flora_ameacada"),pattern = ".tif",full.names=TRUE)
+A.E.tmp = gsub(".*/", "", A.E)
+A.E.tmp = gsub('[_][^_]+$',"",A.E.tmp)
+A.E.tmp = gsub('[_][^_]+$',"",A.E.tmp) # It has to be run twice to adjust string
+A.E.tmp = gsub("_", " ", A.E.tmp, fixed=TRUE)
+A.E.tmp = as.data.frame(A.E.tmp) # Transforma lista em DF deixando somente as especies da vez
+# Subseta tabela por especie e bioma da vez
+#t1.tmp.sub = subset(t1.tmp, Nova_class_ve == especie & Bioma_temporario_ve == bioma)
+#tmp = data.frame("especies_flora_ameacada_raster" = A.E.tmp)
+
+
+for (i in 1:nrow(t1.tmp)) {
+  chave = grep(as.character(t1.tmp$species[[i]]),as.character(A.E.tmp$A.E.tmp),value = T)
+  #cHAVE DE DECISAO
+  if(length(chave)>0){ print("Transferido com sucesso")
+    my.file.rename(from = paste0("C:\\Users\\iis\\Desktop\\Teste\\debug_especies\\","flora_ameacada","\\",
+                                 gsub(" ","_",t1.tmp$species[[i]]), # Nome da especie
+                                 "_final_present.tif"),
+                   to = paste0("D:\\PPBio2.0\\","debug_flora_ameacada_existente_na_tabela","\\processados\\especies_debug\\flora_ameacada_existente_na_tabela\\",
+                               t1.tmp$species[[i]], #Nome da especie
+                               ".tif"))}
+}
+
+
+
+tmp = list.files("C:\\Users\\iis\\Desktop\\Teste\\debug_especies\\flora_ameacada", full.names = F)
+tmp = data.frame("especies" = tmp)
+
+write.csv(tmp,"C:\\Users\\iis\\Desktop\\Teste\\debug_especies\\especies_faltantes_na_tabela.csv")
