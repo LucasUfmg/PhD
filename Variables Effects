@@ -1,0 +1,46 @@
+### Standardize Estimators ###
+#### Lucas RSS ###########
+
+#Load libs
+library(QuantPsyc)
+library(arm)
+
+# Load file
+m = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\master.csv")
+m$X = NULL
+
+# Subseting per frontier and Biome
+fronteira = c("Newst [Current-4 years]","New [5-8 years]",
+              "Old [9-12 years]", "Oldest [13-16 years]")
+b = c("Amz","Amz-Cer","Cer")
+
+m_scaled = data.frame(scale(m[,c(3,4,6,7,8)]))
+colnames(m_scaled) = c("fire","agricultural_area_in_the_municipality",
+                       "surronding_agriculture_10km_from_fire_cells",
+                       "mcwd","deforestation")
+m_scaled = cbind(m,m_scaled)
+
+#Plots
+for (i in 1:length(unique(m_scaled$Biome..Factor.))) {
+  par(mfrow=c(2,2))
+   for (j in 1:length(unique(m_scaled$Frontier.Age..Factor.))) {
+    tmp = subset(m_scaled,m_scaled[,10] == fronteira[j] & m_scaled[,11] == b[i])
+    fit = lm(fire ~ agricultural_area_in_the_municipality + surronding_agriculture_10km_from_fire_cells +
+               mcwd + deforestation,
+           data=tmp)
+    #lm.beta(fit)
+    # tiff(paste0("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\figures\\effect_",
+    # fronteira[j],"_",b[i],".tiff"),
+    #      width = 4, height = 4,
+    #      units = 'in', res = 100, compression = 'none')
+    # #lm.beta(fit)
+    # 
+    coefplot(fit, main = paste0("Variables effect within ",fronteira[j],"\n",
+                                "Frontiers ",b[i]),
+                                mar = c(2,13,7.1,3),
+             cex.pts = 2.5,
+             col.pts = 1) # Plota efeito das explicativas sobre a ocorrencia
+    #dev.off()
+    
+              }
+  }
