@@ -1,0 +1,100 @@
+## Plot Carluc Figures
+library(ggplot2)
+library(gridExtra)
+library(reshape2)
+fi = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\tables\\CARLUC\\FI.csv")
+ros = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\tables\\CARLUC\\ros.csv")
+uvpd = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\tables\\CARLUC\\uvpd.csv")
+w = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\tables\\CARLUC\\W.csv")
+
+###
+ros = ros[1:2,1:3]
+w = w[,1:3]
+
+###
+
+colnames(fi) = c("Year","Simulated", "Observed")
+colnames(ros) = c("Year","Simulated", "Observed")
+colnames(uvpd) = c("Year","Simulated", "Observed")
+colnames(w) = c("Year","Simulated", "Observed")
+
+
+
+###
+
+fi.r = melt(fi, "Year")
+ros.r = melt(ros, "Year")
+uvpd.r = melt(uvpd, "Year")
+w.r = melt(w, "Year") 
+
+p1 = ggplot(fi.r,aes(as.factor(Year),value,fill = variable)) + 
+  geom_col(position = "dodge", alpha = 0.5) +
+  ylab("Fire Line Intensity (kW/m)") + xlab("Year") +
+  annotate(geom = "text", label = "A",size=11, x = as.factor(2004), y = 180) +
+  scale_fill_manual(values = c("red","orange")) +
+  theme_minimal(base_size = 26) + theme(legend.title = element_blank(), 
+                                        legend.position = "top")
+
+p2 = ggplot(ros.r,aes(as.factor(Year),value,fill = variable)) + 
+  geom_col(position = "dodge", alpha = 0.5) +
+  ylab("Spread Rate (m/min)") + xlab("Year") +
+  annotate(geom = "text", label = "B",size=11, x = as.factor(2004), y = .46) +
+  scale_fill_manual(values = c("red","orange")) +
+  theme_minimal(base_size = 26) + theme(legend.title = element_blank(), 
+                                        legend.position = "top")
+
+p3 = ggplot(uvpd.r,aes(Year,value,colour = variable)) + 
+  geom_point() +
+  geom_line(lwd = 0.5,alpha = 0.5) +
+  ylab("Vapor Pressure Deficit (Kpa)") + xlab("Year") +
+  annotate(geom = "text", label = "C",size=11, x = 2005.7, y = 2.56) +
+  scale_color_manual(values = c("red","orange")) +
+  theme_minimal(base_size = 26) + theme(legend.title = element_blank(), 
+                                        legend.position = "top")
+
+p4 = ggplot(w.r,aes(as.factor(Year),value,fill = variable)) + 
+  geom_col(position = "dodge", alpha = 0.5) +
+  ylab("Fuel Mass (Kg/m²)") + xlab("Year") +
+  annotate(geom = "text", label = "D",size=11, x = as.factor(2004), y = 2) +
+  scale_fill_manual(values = c("red","orange")) +
+  theme_minimal(base_size = 26) + theme(legend.title = element_blank(), 
+                                        legend.position = "top")
+
+
+
+tiff("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\figures\\carluc.tiff",width = 15, res = 300, height = 12, units = "in", compression = "none")
+grid.arrange(p1,p2,p3,p4,ncol = 2)
+dev.off()
+####################
+# Plot active fires and burned area validation
+
+t1 = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\tables\\calibracao_focos.csv")
+  
+t2 = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\tables\\area_queimada_validacao_Morton_Fscars_Mha.csv")
+colnames(t2) = c("Year","Observed","Simulated")
+t2 = t2[,c(1,3,2)]
+t1.r = melt(t1, "Month")
+t2.r = melt(t2, "Year")
+
+p1 = ggplot(t1.r,aes(as.factor(Month),value,fill = variable)) + 
+  geom_col(position = "dodge", alpha = 0.5) +
+  ylab("Active Fires") + xlab("Month") +
+  annotate(geom = "text", label = "A",size=11, x = 1, y = max(t1.r$value)) +
+  scale_fill_manual(values = c("red","orange")) +
+  theme_minimal(base_size = 26) + theme(legend.title = element_blank())
+
+p2 = ggplot(t2.r,aes(as.factor(Year),value,fill = variable)) + 
+  geom_col(position = "dodge", alpha = 0.5) +
+  ylab("Burned Area") + xlab("Year") +
+  annotate(geom = "text", label = "B",size=11, x = 1, y = max(t2.r$value)) +
+  scale_fill_manual(values = c("red","orange")) +
+  theme_minimal(base_size = 26) + theme(legend.title = element_blank())
+
+
+
+tiff("C:\\Users\\iis\\Desktop\\Lucas\\fire_storm\\figures\\spread.tiff",width = 15, res = 300, height = 12, units = "in", compression = "none")
+grid.arrange(p1,p2,ncol = 1)
+dev.off()
+
+
+
