@@ -1,0 +1,50 @@
+
+library(dplyr)
+library(rpart)
+library(party)
+
+# Working on Phd data - The right way..
+
+# Exploratory Analysis
+t1 = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\phd\\master.csv", header = T)
+attach(t1) 
+names(t1)
+t1$X = NULL
+
+# Slipt data yearly and per biome and frontier.age:
+
+for (i in 2001:2004) {
+print(i)
+t1.filter = data.frame(filter(t1, Year == i & 
+                          Frontier.Age..Factor. == "Newst [Current-4 years]" &
+                          Biome..Factor. == "Cer"))
+attach(t1.2001)
+# plot(Mcwd,Fire,col="red", main = paste0(i))
+# plot(Agricultural.Area,Fire,col ="red", main = paste0(i))
+# plot(Surronding.Agriculture,Fire,col="red", main = paste0(i))
+# plot(Frontier.Age,Fire,col ="red", main = paste0(i))
+
+# Making room for all plots
+par(mfrow = c(2,2),mar=c(4.5, 4.5, 0.5, 0.5))
+
+## Investigating data - Tree Model
+fit = rpart(Fire ~ Mcwd + Deforestation + Agricultural.Area + Surronding.Agriculture, data= t1.filter)
+plot(fit,main=paste0("Tree_Fire_Newst [Current-4 years]_Cerrado",i))
+text(fit)
+}
+
+-----------------------------------------------
+-----------------------------------------------
+## Investigating data - Tree Model
+fit = rpart(Fire ~ Mcwd + Deforestation + Agricultural.Area + Surronding.Agriculture, data= t1.filter)
+plot(fit,main=paste0("Tree_Fire_Newst [Current-4 years]_Cerrado",i))
+text(fit)
+
+low = (Deforestation<5.5)  #Tree threshold
+tapply(Fire,low,mean) # Mean of values above (False) and below (True) the tree 
+                      # Threshold
+# This is how tree works!
+plot(Deforestation,Fire,pch=16) 
+abline(v=5.5,lty=2) # Value from tree partioning (Threshold) 
+lines(c(0,5.5),c(227.5072,227.5072)) 
+lines(c(5.5,max(Deforestation)),c(1260.5326,1260.5326))
