@@ -1,37 +1,33 @@
-
-library(dplyr)
-library(rpart)
-library(party)
-
-# Working on Phd data - The right way..
-
 # Exploratory Analysis
 t1 = read.csv("C:\\Users\\iis\\Desktop\\Lucas\\phd\\master.csv", header = T)
 attach(t1) 
 names(t1)
 t1$X = NULL
 
-# Slipt data yearly and per biome and frontier.age:
+# Slipt data yearly
 
-for (i in 2001:2004) {
+for (i in 2001:2017) {
 print(i)
 t1.filter = data.frame(filter(t1, Year == i & 
-                          Frontier.Age..Factor. == "Newst [Current-4 years]" &
+                          Frontier.Age..Factor. == "New [5-8 years]" &
                           Biome..Factor. == "Cer"))
-attach(t1.2001)
+attach(t1.filter)
 # plot(Mcwd,Fire,col="red", main = paste0(i))
 # plot(Agricultural.Area,Fire,col ="red", main = paste0(i))
 # plot(Surronding.Agriculture,Fire,col="red", main = paste0(i))
 # plot(Frontier.Age,Fire,col ="red", main = paste0(i))
 
 # Making room for all plots
-par(mfrow = c(2,2),mar=c(4.5, 4.5, 0.5, 0.5))
-
+par(mar=c(0,2.1,2,2.1))
 ## Investigating data - Tree Model
 fit = rpart(Fire ~ Mcwd + Deforestation + Agricultural.Area + Surronding.Agriculture, data= t1.filter)
-plot(fit,main=paste0("Tree_Fire_Newst [Current-4 years]_Cerrado",i))
+
+tiff(paste0("C:\\Users\\iis\\Desktop\\Lucas\\phd\\figures\\","Tree_fire_new_cerrado_",i,".tiff"),width = 9, res = 100, height = 6, units = "in", compression = "none")
+plot(fit,main=paste0("Tree Fire - Frontier: New [5-8 years] Cerrado",i))
 text(fit)
+dev.off()
 }
+
 
 -----------------------------------------------
 -----------------------------------------------
