@@ -1,0 +1,11 @@
+# Merge new data via `merge` function
+master =  read.csv(file.choose())
+new_data =  read.csv(file.choose())
+
+master$X = NULL
+new_data$X = NULL
+
+colnames(new_data) = c("Municipality","Year","Prob_Fire_Based_on_Agriculture") 
+
+new_master = merge.data.frame(master,new_data,by = c("Municipality","Year") , all = FALSE)
+###########
