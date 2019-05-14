@@ -1,0 +1,32 @@
+
+# Fire cont
+library(ggplot2)
+library(reshape2)
+
+cer = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\1-prop_fogo_cerrado_relativo_ao_tamanho_do_bioma.csv", header = T)
+amz = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\1-prop_fogo_amz_relativo_ao_tamanho_do_bioma.csv", header = T)
+
+cer$X = NULL
+amz$X = NULL
+
+cer_amz = cbind(cer, amz$Fire)
+
+colnames(cer_amz) = c("Year","Cerrado","Amazonia")
+cer_amz = melt(cer_amz, id = "Year")
+
+p1 =  ggplot(cer_amz,aes(Year,value, color = variable)) + 
+  geom_point(shape = 16, size = 5,alpha = .4) +
+  geom_line() + #geom_vline(xintercept= c(2007,2010)) +
+  ylab("Active Fires Proportion\nper biome") +
+  theme_minimal(base_size = 26) + 
+  scale_x_continuous(breaks = c(seq(2001,2017,1))) +
+  scale_color_manual(values = c("red", "darkgreen")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        #legend.text = element_blank(),
+        legend.title = element_blank(),
+        axis.title.x.bottom = element_blank(),
+        legend.position = "bottom")
+
+tiff("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\figures\\new_analysis\\fig1.tiff", width = 20, height = 11, units = 'in', res = 300, compression = 'none')
+p1 
+dev.off()
