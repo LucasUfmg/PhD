@@ -1,0 +1,144 @@
+# Fire cont ( Fig 1)
+library(ggplot2)
+library(reshape2)
+library(plyr) 
+library(rgdal)
+
+#################################
+# Serie temporal fogo municipios
+amz_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_floresta_amz.csv", header = T)
+amz_n_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_n_floresta_amz.csv", header = T)
+
+amz_f_n_f = rbind(amz_f,amz_n_f)
+
+amz_f_n_f$X = NULL
+amz_f_n_f_s = subset(amz_f_n_f, Value > -9999)
+
+ggplot(amz_f_n_f_s,aes(Year.,Value, color = as.factor(Key.))) + 
+  geom_point(shape = 16, size = 9,alpha = .4) +
+  geom_smooth() + #geom_vline(xintercept= c(2007,2010)) +
+  ylab("Active Fires Proportion\nper biome") +
+  theme_minimal(base_size = 32) + 
+  scale_x_continuous(breaks = c(seq(2001,2017,1))) +
+  scale_color_manual(values = c("red", "darkgreen")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        #legend.text = element_blank(),
+        legend.title = element_blank(),
+        axis.title.x.bottom = element_blank(),
+        legend.position = "bottom")
+
+
+######
+# Merge shp and fire csv data one map for forest fire and one map for non forest fire 
+# 1 - forest fire 
+
+amz_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_floresta_amz.csv", header = T)
+amz_f$Biome = "Amazonia"
+cer_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_floresta_cer.csv", header = T)
+cer_f$Biome = "Cerrado"
+
+amz_cer_f = rbind(amz_f,cer_f)
+amz_cer_f$X = NULL
+amz_cer_f_s = subset(amz_cer_f, Value > -9999)
+
+setwd("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\shapes")
+map   <- readOGR(dsn=".",layer="PAMibge_2001")
+map   <- map[,c(1,2,3)] 
+
+data <- data.frame(id=rownames(map@data),
+                   MUN=  map@data$MUNICIPIO,
+                   EST=  map@data$ESTADO)
+
+data$id <- as.character(data$id)
+
+data    <- merge(data,amz_cer_f_s,by.x="id",by.y="Municipality.", all.x=F)
+data$Vegetation = "Forest"
+data = subset(data, !(data$EST == "BA" & data$Biome == "Amazonia" | data$EST == "GO" & data$Biome == "Amazonia" |
+                 data$EST == "PI" & data$Biome == "Amazonia"))
+map.df <- fortify(map)
+map.df <- join(map.df,data,by="id")
+
+g2 = ggplot(map.df, aes(long,lat, group=group))+
+  geom_polygon(aes(fill=Value))+
+  coord_fixed()+
+  scale_fill_gradient(low = "#ffffcc", high = "#ff4444", 
+                      space = "Lab", na.value = "grey80",
+                      guide = "colourbar")+
+  labs(title="Proportion of Fires\n in Forest",  x="Long", y="Lat")+
+  theme(#axis.text=element_blank(),axis.ticks=element_blank(),
+        legend.title = element_blank())
+
+
+# 2 - non forest fire 
+
+amz_n_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_n_floresta_amz.csv", header = T)
+amz_n_f$Biome = "Amazonia"
+cer_n_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_n_floresta_cer.csv", header = T)
+cer_n_f$Biome = "Cerrado"
+
+amz_cer_n_f = rbind(amz_n_f,cer_n_f)
+amz_cer_n_f$X = NULL
+amz_cer_n_f_s = subset(amz_cer_n_f, Value > -9999)
+
+setwd("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\shapes")
+map   <- readOGR(dsn=".",layer="PAMibge_2001")
+map   <- map[,c(1,2,3)] 
+
+data_n <- data.frame(id=rownames(map@data),
+                   MUN=  map@data$MUNICIPIO,
+                   EST=  map@data$ESTADO)
+
+
+
+data_n$id <- as.character(data_n$id)
+
+data_n    <- merge(data_n,amz_cer_n_f_s,by.x="id",by.y="Municipality.", all.x=F)
+data_n$Vegetation = "Non-Forest"
+
+data_n = subset(data_n, !(data_n$EST == "BA" & data_n$Biome == "Amazonia" | data_n$EST == "GO" & data_n$Biome == "Amazonia" |
+                            data_n$EST == "PI" & data_n$Biome == "Amazonia"))
+
+map.df_n <- fortify(map)
+map.df_n <- join(map.df_n,data_n,by="id")
+
+g1 = ggplot(map.df_n, aes(long,lat, group=group))+
+  geom_polygon(aes(fill=Value))+
+  coord_fixed()+
+  scale_fill_gradient(low = "#ffffcc", high = "#ff4444", 
+                      space = "Lab", na.value = "grey80",
+                      guide = "colourbar")+
+  labs(title="Proportion of Fires\n in non Forest", x="Long", y="Lat")+
+  theme(#axis.text=element_blank(),axis.ticks=element_blank(),
+        legend.title = element_blank())
+
+tiff("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\figures\\new_analysis\\fogo_n_floresta.tiff", width = 17, height = 17, units = 'in', res = 300, compression = 'none')
+g1
+dev.off()
+
+
+######################
+# Plot curves 
+
+final_data = rbind(data,data_n)
+
+
+p1 = ggplot(final_data,aes(Year.,Value, color = as.factor(Vegetation))) + 
+  geom_point(shape = 16, size = 4,alpha = 0.01) +
+  geom_smooth(method = "loess", se = F, lwd = .9) + #geom_vline(xintercept= c(2007,2010)) +
+  ylab("Active Fires\n Proportion per municipality") +
+  theme_minimal(base_size = 17) + ylim(0,0.1) +
+  scale_x_continuous(breaks = c(seq(2001,2017,1))) +
+  scale_color_manual(values = c("red", "darkgreen")) +
+  facet_wrap(vars(as.factor(final_data$Biome),as.factor(final_data$EST))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        #legend.text = element_blank(),
+        legend.title = element_blank(),
+        axis.title.x.bottom = element_blank(),
+        legend.position = "bottom")
+
+tiff("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\figures\\new_analysis\\serie_temporal_fogo.tiff", width = 17, height = 17, units = 'in', res = 300, compression = 'none')
+p1 
+dev.off()
+
+
+ 
