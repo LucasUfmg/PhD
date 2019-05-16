@@ -1,0 +1,90 @@
+# Constroe DF Amazonia
+
+amz_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_floresta_amz.csv", header = T)
+amz_f$Biome = "Amazonia"
+amz_f$X = NULL
+amz_f_agr = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\4-agr_entorno_fogo_floresta_amz.csv", header = T)
+amz_f_agr$Biome = "Amazonia"
+amz_f_agr$X = NULL
+amz = cbind(amz_f,amz_f_agr$Value)
+colnames(amz) = c("Municipality", "Year","Key","Fire","Biome","Surronding_Agriculture")
+amz = subset(amz, Fire > -9999 & Surronding_Agriculture > -9999)
+
+amz_n_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_n_floresta_amz.csv", header = T)
+amz_n_f$Biome = "Amazonia"
+amz_n_f$X = NULL
+amz_n_f_agr = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\4-agr_entorno_fogo_n_floresta_amz.csv", header = T)
+amz_n_f_agr$Biome = "Amazonia"
+amz_n_f_agr$X = NULL
+amz_n = cbind(amz_n_f,amz_n_f_agr$Value)
+colnames(amz_n) = c("Municipality", "Year","Key","Fire","Biome","Surronding_Agriculture")
+amz_n = subset(amz_n, Fire > -9999 & Surronding_Agriculture > -9999)
+
+amz_final = rbind(amz,amz_n)
+# Constroe DF Cerrado
+cer_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_floresta_cer.csv", header = T)
+cer_f$Biome = "Cerrado"
+cer_f$X = NULL
+cer_f_agr = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\4-agr_entorno_fogo_floresta_cer.csv", header = T)
+cer_f_agr$Biome = "Cerrado"
+cer_f_agr$X = NULL
+cer = cbind(cer_f,cer_f_agr$Value)
+colnames(cer) = c("Municipality", "Year","Key","Fire","Biome","Surronding_Agriculture")
+cer = subset(cer, Fire > -9999 & Surronding_Agriculture > -9999)
+
+cer_n_f = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\3-fogo_n_floresta_cer.csv", header = T)
+cer_n_f$Biome = "Cerrado"
+cer_n_f$X = NULL
+cer_n_f_agr = read.csv("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\tables\\novas_analises_VIIRS\\4-agr_entorno_fogo_n_floresta_cer.csv", header = T)
+cer_n_f_agr$Biome = "Cerrado"
+cer_n_f_agr$X = NULL
+cer_n = cbind(cer_n_f,cer_n_f_agr$Value)
+colnames(cer_n) = c("Municipality", "Year","Key","Fire","Biome","Surronding_Agriculture")
+cer_n = subset(cer_n, Fire > -9999 & Surronding_Agriculture > -9999)
+
+cer_final = rbind(cer,cer_n)
+
+
+# DF final with Amz and Cer
+
+amz_cer_final = rbind(amz_final,cer_final)
+
+
+ggplot(amz_cer_final,aes(Surronding_Agriculture,Fire)) + 
+  geom_point(shape = 16, size = 9,alpha = .4) +
+  geom_smooth(method = "loess", col = "red", se = F) + #geom_vline(xintercept= c(2007,2010)) +
+  ylab("Active Fires Proportion") +
+  xlab("Surronding (10km) Agriculture Proportion") +
+  theme_minimal(base_size = 26) + 
+  #scale_x_continuous(breaks = c(seq(2001,2017,1))) +
+  scale_color_manual(values = c("red", "darkgreen")) +
+  facet_wrap(vars(as.factor(amz_cer_final$Biome),as.factor(amz_cer_final$Key))) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        #legend.text = element_blank(),
+        legend.title = element_blank(),
+        #axis.title.x.bottom = element_blank(),
+        legend.position = "bottom")
+
+
+setwd("D:\\Lucas\\2-fire\\outputs\\municipio_250m\\shapes")
+map   <- readOGR(dsn=".",layer="PAMibge_2001")
+map   <- map[,c(1,2,3)] 
+
+data <- data.frame(id=rownames(map@data),
+                   MUN=  map@data$MUNICIPIO,
+                   EST=  map@data$ESTADO)
+
+data$id <- as.character(data$id)
+
+data    <- merge(data,amz_cer_final,by.x="id",by.y="Municipality", all.x=F)
+data$Vegetation = ifelse(data$Key == "1","Forest","Non-Forest")
+data = subset(data, !(data$EST == "BA" & data$Biome == "Amazonia" | data$EST == "GO" & data$Biome == "Amazonia" |
+                        data$EST == "PI" & data$Biome == "Amazonia"))
+
+map.df <- fortify(map)
+map.df <- join(map.df,data,by="id")
+
+
+
+
+ 
