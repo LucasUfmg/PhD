@@ -1,0 +1,1636 @@
+<?xml version="1.0" standalone="yes" ?>
+<script>
+    <property key="dff.date" value="2019-Jul-04 14:06:32" />
+    <property key="dff.version" value="4.0.11.20181011" />
+    <functor name="RealValue">
+        <property key="dff.functor.alias" value="Fator de combustao" />
+        <inputport name="constant">0.89</inputport>
+        <outputport name="object" id="v1" />
+    </functor>
+    <functor name="LoadLookupTable">
+        <property key="dff.functor.alias" value="increase grasses &amp; herbs" />
+        <inputport name="filename">&quot;growth_fuel_rate.csv&quot;</inputport>
+        <inputport name="suffixDigits">0</inputport>
+        <inputport name="step">.none</inputport>
+        <inputport name="workdir">.none</inputport>
+        <outputport name="table" id="v2" />
+    </functor>
+    <containerfunctor name="For">
+        <property key="dff.container.collapsed" value="no" />
+        <property key="dff.functor.alias" value="for3159" />
+        <inputport name="firstIterationStep">1</inputport>
+        <inputport name="lastIterationStep">50</inputport>
+        <inputport name="stepIncrement">1</inputport>
+        <internaloutputport name="step" id="v3" />
+        <functor name="MuxLookupTable">
+            <property key="dff.functor.alias" value="tabela de balanco carbono" />
+            <property key="viewer.table" value="yes" />
+            <inputport name="initial">[&#x0A;    &quot;Meses&quot; &quot;Total_Carbono_No_Estoque&quot;&#x0A;]</inputport>
+            <inputport name="feedback" peerid="v59" />
+            <outputport name="table" id="v4" />
+        </functor>
+        <functor name="Step">
+            <property key="dff.functor.alias" value="step2981" />
+            <inputport name="step" peerid="v3" />
+            <outputport name="step" id="v5" />
+        </functor>
+        <functor name="MuxMap">
+            <property key="dff.functor.alias" value="Arbusto" />
+            <property key="viewer.map" value="yes" />
+            <inputport name="initial" peerid="v82" />
+            <inputport name="feedback" peerid="v37" />
+            <outputport name="map" id="v6" />
+        </functor>
+        <functor name="MuxMap">
+            <property key="dff.functor.alias" value="Arvores" />
+            <property key="viewer.map" value="yes" />
+            <inputport name="initial" peerid="v84" />
+            <inputport name="feedback" peerid="v49" />
+            <outputport name="map" id="v7" />
+        </functor>
+        <functor name="MuxMap">
+            <property key="dff.functor.alias" value="Gramineas" />
+            <property key="viewer.map" value="yes" />
+            <inputport name="initial" peerid="v83" />
+            <inputport name="feedback" peerid="v45" />
+            <outputport name="map" id="v8" />
+        </functor>
+        <functor name="MuxMap">
+            <property key="dff.functor.alias" value="Carbono emitido" />
+            <property key="viewer.map" value="yes" />
+            <inputport name="initial" peerid="v81" />
+            <inputport name="feedback" peerid="v15" />
+            <outputport name="map" id="v9" />
+        </functor>
+        <functor name="MuxMap">
+            <property key="dff.functor.alias" value="Herbaceas" />
+            <property key="viewer.map" value="yes" />
+            <inputport name="initial" peerid="v85" />
+            <inputport name="feedback" peerid="v41" />
+            <outputport name="map" id="v10" />
+        </functor>
+        <functor name="MuxLookupTable">
+            <property key="dff.functor.alias" value="tabela de balanco carbono" />
+            <property key="viewer.table" value="yes" />
+            <inputport name="initial">[&#x0A;    &quot;Meses&quot; &quot;Total_Carbono_No_Estoque&quot;&#x0A;]</inputport>
+            <inputport name="feedback" peerid="v56" />
+            <outputport name="table" id="v11" />
+        </functor>
+        <functor name="MuxLookupTable">
+            <property key="dff.functor.alias" value="Arbusto" />
+            <property key="viewer.table" value="yes" />
+            <inputport name="initial">[&#x0A;    &quot;Meses&quot; &quot;Total_Carbono_No_Estoque&quot;&#x0A;]</inputport>
+            <inputport name="feedback" peerid="v55" />
+            <outputport name="table" id="v12" />
+        </functor>
+        <functor name="MuxLookupTable">
+            <property key="dff.functor.alias" value="Herbaceas" />
+            <property key="viewer.table" value="yes" />
+            <inputport name="initial">[&#x0A;    &quot;Meses&quot; &quot;Total_Carbono_No_Estoque&quot;&#x0A;]</inputport>
+            <inputport name="feedback" peerid="v57" />
+            <outputport name="table" id="v13" />
+        </functor>
+        <functor name="MuxLookupTable">
+            <property key="dff.functor.alias" value="tabela de balanco carbono" />
+            <property key="viewer.table" value="yes" />
+            <inputport name="initial">[&#x0A;    &quot;Meses&quot; &quot;Total_Carbono_No_Estoque&quot;&#x0A;]</inputport>
+            <inputport name="feedback" peerid="v61" />
+            <outputport name="table" id="v14" />
+        </functor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Dinamica de C" />
+            <containerfunctor name="CalculateMap">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Estoque de carbono" />
+                <property key="dff.functor.comment" value="Estoque" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    i3 + i2 - i1&#x0A;]</inputport>
+                <inputport name="cellType">.float32</inputport>
+                <inputport name="nullValue">.default</inputport>
+                <inputport name="resultIsSparse">.no</inputport>
+                <inputport name="resultFormat">.none</inputport>
+                <outputport name="result" id="v15" />
+                <functor name="NumberMap">
+                    <property key="dff.functor.alias" value="numberMap3150" />
+                    <inputport name="map" peerid="v20" />
+                    <inputport name="mapNumber">2</inputport>
+                </functor>
+                <functor name="NumberMap">
+                    <property key="dff.functor.alias" value="numberMap3150" />
+                    <inputport name="map" peerid="v16" />
+                    <inputport name="mapNumber">1</inputport>
+                </functor>
+                <functor name="NumberMap">
+                    <property key="dff.functor.alias" value="numberMap2935" />
+                    <inputport name="map" peerid="v9" />
+                    <inputport name="mapNumber">3</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="absorcao" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Absorcao" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if v1 = 0 then&#x0A;        i1 * i2&#x0A;    else &#x0A;        i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v16" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3105" />
+                        <inputport name="map" peerid="v18" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3118" />
+                        <inputport name="map" peerid="v9" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3121" />
+                        <inputport name="value" peerid="v99" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2953" />
+                        <inputport name="value" peerid="v73" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Carbono absorvido pos fogo" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v17" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3100" />
+                        <inputport name="map" peerid="v19" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3103" />
+                        <inputport name="value" peerid="v101" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="conversao 2 taxa" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    0.1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v18" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2910" />
+                        <inputport name="map" peerid="v17" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Incremento total de biomassa" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 + i2 + i3 + i4&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v19" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3092" />
+                        <inputport name="map" peerid="v42" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3092" />
+                        <inputport name="map" peerid="v50" />
+                        <inputport name="mapNumber">4</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3092" />
+                        <inputport name="map" peerid="v38" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3092" />
+                        <inputport name="map" peerid="v46" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="emissao" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Emissao" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if v1 &gt;= 1 then&#x0A;        i1 + i2&#x0A;    else &#x0A;        i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v20" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3118" />
+                        <inputport name="map" peerid="v9" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3121" />
+                        <inputport name="value" peerid="v98" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3247" />
+                        <inputport name="map" peerid="v21" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2952" />
+                        <inputport name="value" peerid="v73" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="conversao taxa" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    4 * (i1 ^ 2) - 1.9 * i1 + 0.43&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v21" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2910" />
+                        <inputport name="map" peerid="v22" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Carbono emitido pos fogo" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v22" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v23" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3145" />
+                        <inputport name="value" peerid="v101" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Decremento total de Biomassa (Biomassa oxidada)" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v23" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v32" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2926" />
+                        <inputport name="value" peerid="v100" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Parametros fisicos do fogo" />
+            <property key="dff.functor.comment" value="Resulta no calor liberado na combustao" />
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Quantifica biomassa total disponivel para queima" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa arbusto queima" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v24" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v6" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2861" />
+                        <inputport name="value" peerid="v107" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa herbacea p queima" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v25" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v10" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2861" />
+                        <inputport name="value" peerid="v110" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa arvore queima" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v26" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v7" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2861" />
+                        <inputport name="value" peerid="v109" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa graminea p queima" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v27" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v8" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2861" />
+                        <inputport name="value" peerid="v108" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa total disponivel para queima" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 + i2 + i3 + i4&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v28" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v27" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v26" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v24" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3317" />
+                        <inputport name="map" peerid="v25" />
+                        <inputport name="mapNumber">4</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Parametros fisicos do fogo" />
+                <functor name="RealValue">
+                    <property key="dff.functor.alias" value="Entalpia" />
+                    <inputport name="constant">15500</inputport>
+                    <outputport name="object" id="v29" />
+                </functor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Vel fogo" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    0.38 * ln(i2) + 0.24 * ln(i3)&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v30" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3232" />
+                        <inputport name="map" peerid="v106" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3232" />
+                        <inputport name="map" peerid="v34" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Intensidade do fogo" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * i2 * v1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v31" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v32" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2861" />
+                        <inputport name="value" peerid="v29" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3241" />
+                        <inputport name="map" peerid="v30" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Combustivel consumido (W)" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v32" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3223" />
+                        <inputport name="map" peerid="v28" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2861" />
+                        <inputport name="value" peerid="v1" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Calor liberado" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i2 / i1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v33" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3196" />
+                        <inputport name="map" peerid="v31" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3239" />
+                        <inputport name="map" peerid="v30" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="VPD" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    v1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v34" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2961" />
+                        <inputport name="value" peerid="v35" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2959" />
+                        <inputport name="map" peerid="v104" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <functor name="GetTableValue">
+                    <property key="dff.functor.alias" value="getTableValue2965" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="table" peerid="v105" />
+                    <inputport name="keys" peerid="v5" />
+                    <inputport name="column">2</inputport>
+                    <inputport name="valueIfNotFound">.none</inputport>
+                    <outputport name="result" id="v35" />
+                </functor>
+            </containerfunctor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Biomassa pos incremento" />
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Arbustos" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Decremento sazonal dos arbustos" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if v1 = 1 then&#x0A;        i1 * i2&#x0A;    else if v1 &gt; 1 then&#x0A;        i1 * i2&#x0A;    else &#x0A;        i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v36" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="decremento natural arbusto" />
+                        <inputport name="value" peerid="v97" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v73" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2984" />
+                        <inputport name="map" peerid="v6" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3240" />
+                        <inputport name="map" peerid="v39" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa dos arbustos" />
+                    <property key="dff.functor.comment" value="Estoque" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i3 + i1 - i2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v37" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v36" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v38" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2934" />
+                        <inputport name="map" peerid="v6" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Incremento sazonal dos arbustos" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if i1 &gt;= 0.13 then&#x0A;        i1 * v1&#x0A;    else &#x0A;        i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v38" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="incremento arbusto" />
+                        <inputport name="value" peerid="v95" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v96" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2984" />
+                        <inputport name="map" peerid="v6" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Decrescimento pos fogo arbusto (taxa)" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    2e-06 * i1 + 0.3815&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v39" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2910" />
+                        <inputport name="map" peerid="v33" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Herbaceas" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Decremento sazonal dos herbaceas" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if v2 = 1 then&#x0A;        i1 * v3&#x0A;    else if v2 &gt; 1 then&#x0A;        i1 * v3&#x0A;    else &#x0A;        i1 * v1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v40" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="time" />
+                        <inputport name="value" peerid="v73" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v90" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2984" />
+                        <inputport name="map" peerid="v10" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3043" />
+                        <inputport name="value" peerid="v91" />
+                        <inputport name="valueNumber">3</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa dos herbaceas" />
+                    <property key="dff.functor.comment" value="Estoque" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i3 + i1 - i2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v41" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v40" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v42" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2932" />
+                        <inputport name="map" peerid="v10" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Incremento sazonal dos herbaceas" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if i1 &gt;= 0.1 then&#x0A;        i1 * v1&#x0A;    else &#x0A;        i1 * v3&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v42" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v89" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3251" />
+                        <inputport name="value" peerid="v43" />
+                        <inputport name="valueNumber">3</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2924" />
+                        <inputport name="map" peerid="v10" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateValue">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Taxa de incremento pos fogo herbaceas" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    t1[v1]&#x0A;]</inputport>
+                    <inputport name="defaultValue">.none</inputport>
+                    <outputport name="result" id="v43" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2926" />
+                        <inputport name="value" peerid="v5" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberTable">
+                        <property key="dff.functor.alias" value="numberTable2925" />
+                        <inputport name="table" peerid="v2" />
+                        <inputport name="tableNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Gramineas" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Decremento sazonal dos gramineas" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if v2 = 1 then&#x0A;        i1 * v1&#x0A;    else if v2 &gt; 1 then&#x0A;        i1 * v1&#x0A;    else &#x0A;        i1 * v3&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v44" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="time" />
+                        <inputport name="value" peerid="v73" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v93" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2984" />
+                        <inputport name="map" peerid="v8" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3043" />
+                        <inputport name="value" peerid="v92" />
+                        <inputport name="valueNumber">3</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa dos gramineas" />
+                    <property key="dff.functor.comment" value="Estoque" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i3 + i1 - i2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v45" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v44" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v46" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2933" />
+                        <inputport name="map" peerid="v8" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Incremento sazonal dos graminea" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if i1 &gt;= 0.5 then&#x0A;        i1 * v1&#x0A;    else &#x0A;        i1 * v3&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v46" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v94" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue3250" />
+                        <inputport name="value" peerid="v47" />
+                        <inputport name="valueNumber">3</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2924" />
+                        <inputport name="map" peerid="v8" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateValue">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Taxa incremento graminea pos fogo" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    t1[v1]&#x0A;]</inputport>
+                    <inputport name="defaultValue">.none</inputport>
+                    <outputport name="result" id="v47" />
+                    <functor name="NumberTable">
+                        <property key="dff.functor.alias" value="numberTable2925" />
+                        <inputport name="table" peerid="v2" />
+                        <inputport name="tableNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2926" />
+                        <inputport name="value" peerid="v5" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+            <containerfunctor name="Group">
+                <property key="dff.container.collapsed" value="no" />
+                <property key="dff.functor.alias" value="Arvores" />
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Decremento sazonal das arvores" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if v2 = 1 then&#x0A;        i1 * i2&#x0A;    else if v2 &gt; 1 then&#x0A;        i1 * 0.6&#x0A;    else &#x0A;        i1 * v1&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v48" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="time" />
+                        <inputport name="value" peerid="v73" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v88" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2984" />
+                        <inputport name="map" peerid="v7" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3242" />
+                        <inputport name="map" peerid="v51" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="yes" />
+                    <property key="dff.functor.alias" value="Biomassa das arvores" />
+                    <property key="dff.functor.comment" value="Estoque" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    i3 + i1 - i2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v49" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v48" />
+                        <inputport name="mapNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap3070" />
+                        <inputport name="map" peerid="v50" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2931" />
+                        <inputport name="map" peerid="v7" />
+                        <inputport name="mapNumber">3</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Incremento sazonal das arvores" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    if i1 &gt;= 0.9 then&#x0A;        i1 * v1&#x0A;    else &#x0A;        i1 * v2&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v50" />
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="incremento pos fogo" />
+                        <inputport name="value" peerid="v86" />
+                        <inputport name="valueNumber">2</inputport>
+                    </functor>
+                    <functor name="NumberValue">
+                        <property key="dff.functor.alias" value="numberValue2973" />
+                        <inputport name="value" peerid="v87" />
+                        <inputport name="valueNumber">1</inputport>
+                    </functor>
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2984" />
+                        <inputport name="map" peerid="v7" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+                <containerfunctor name="CalculateMap">
+                    <property key="dff.container.collapsed" value="no" />
+                    <property key="dff.functor.alias" value="Decrescimento pos fogo arvores (taxa)" />
+                    <property key="viewer.result" value="yes" />
+                    <inputport name="expression">[&#x0A;    2e-06 * i1 + 0.3815&#x0A;]</inputport>
+                    <inputport name="cellType">.float32</inputport>
+                    <inputport name="nullValue">.default</inputport>
+                    <inputport name="resultIsSparse">.no</inputport>
+                    <inputport name="resultFormat">.none</inputport>
+                    <outputport name="result" id="v51" />
+                    <functor name="NumberMap">
+                        <property key="dff.functor.alias" value="numberMap2910" />
+                        <inputport name="map" peerid="v33" />
+                        <inputport name="mapNumber">1</inputport>
+                    </functor>
+                </containerfunctor>
+            </containerfunctor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Create tables" />
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v49" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v52" />
+            </functor>
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v37" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v53" />
+            </functor>
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v41" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v54" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="Arbusto (Shurb)" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v12" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v63" />
+                <outputport name="updatedTable" id="v55" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="Arvores" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v11" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v62" />
+                <outputport name="updatedTable" id="v56" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="Herbaceas" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v13" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v64" />
+                <outputport name="updatedTable" id="v57" />
+            </functor>
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v15" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v58" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="C" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v4" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v65" />
+                <outputport name="updatedTable" id="v59" />
+            </functor>
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v45" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v60" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="Gramineas" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v14" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v66" />
+                <outputport name="updatedTable" id="v61" />
+            </functor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v62" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v52" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v63" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v53" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v64" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v54" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v65" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v58" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v66" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v60" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v32" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v67" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="Fuel loads" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v74" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v69" />
+                <outputport name="updatedTable" id="v68" />
+            </functor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v69" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v67" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+            <functor name="ExtractMapAttributes">
+                <property key="dff.functor.alias" value="extractMapAttributes3153" />
+                <inputport name="map" peerid="v34" />
+                <inputport name="extractDynamicAttributes">.yes</inputport>
+                <inputport name="extractStatisticalAttributes">.yes</inputport>
+                <outputport name="attributes" id="v70" />
+            </functor>
+            <functor name="SetLookupTableValue">
+                <property key="dff.functor.alias" value="VPD" />
+                <property key="viewer.updatedtable" value="yes" />
+                <inputport name="table" peerid="v75" />
+                <inputport name="key" peerid="v5" />
+                <inputport name="value" peerid="v72" />
+                <outputport name="updatedTable" id="v71" />
+            </functor>
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Carbono total" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    t1[&quot;cellSum&quot;] / 4&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v72" />
+                <functor name="NumberTable">
+                    <property key="dff.functor.alias" value="numberTable3156" />
+                    <inputport name="table" peerid="v70" />
+                    <inputport name="tableNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Ignition Key" />
+            <property key="dff.functor.extendedcomment" value="Here is where we put fire in the system!" />
+            <containerfunctor name="CalculateValue">
+                <property key="dff.container.collapsed" value="yes" />
+                <property key="dff.functor.alias" value="Chave de ignição" />
+                <property key="viewer.result" value="yes" />
+                <inputport name="expression">[&#x0A;    if v1 = 1 then&#x0A;        v1&#x0A;    else &#x0A;        0&#x0A;]</inputport>
+                <inputport name="defaultValue">.none</inputport>
+                <outputport name="result" id="v73" />
+                <functor name="NumberValue">
+                    <property key="dff.functor.alias" value="numberValue3181" />
+                    <inputport name="value" peerid="v5" />
+                    <inputport name="valueNumber">1</inputport>
+                </functor>
+            </containerfunctor>
+        </containerfunctor>
+        <functor name="MuxTable">
+            <property key="dff.functor.alias" value="muxTable2974" />
+            <inputport name="initial">[&#x0A;    &quot;Meses*&quot;, &quot;Fuel&quot;, &#x0A;]</inputport>
+            <inputport name="feedback" peerid="v68" />
+            <outputport name="table" id="v74" />
+        </functor>
+        <functor name="MuxLookupTable">
+            <property key="dff.functor.alias" value="Arbusto" />
+            <property key="viewer.table" value="yes" />
+            <inputport name="initial">[&#x0A;    &quot;Meses&quot; &quot;VPD&quot;&#x0A;]</inputport>
+            <inputport name="feedback" peerid="v71" />
+            <outputport name="table" id="v75" />
+        </functor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.container.collapsed" value="yes" />
+        <property key="dff.functor.alias" value="Biomass pools" />
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="Estoque carbono atmosferico" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/carbono.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v76" />
+        </functor>
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="Estoque de herbaceas" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/herbacea.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v77" />
+        </functor>
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="Estoque de arvores" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/arvores.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v78" />
+        </functor>
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="Estoque de graminea" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/graminea.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v79" />
+        </functor>
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="Estoque de arbusto" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/arbusto.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v80" />
+        </functor>
+        <containerfunctor name="CalculateMap">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="random initial value" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="expression">[&#x0A;    0&#x0A;]</inputport>
+            <inputport name="cellType">.float32</inputport>
+            <inputport name="nullValue">.default</inputport>
+            <inputport name="resultIsSparse">.no</inputport>
+            <inputport name="resultFormat">.none</inputport>
+            <outputport name="result" id="v81" />
+            <functor name="NumberMap">
+                <property key="dff.functor.alias" value="numberMap2894" />
+                <inputport name="map" peerid="v76" />
+                <inputport name="mapNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="CalculateMap">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="random initial value" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="expression">[&#x0A;    i1&#x0A;]</inputport>
+            <inputport name="cellType">.float32</inputport>
+            <inputport name="nullValue">.default</inputport>
+            <inputport name="resultIsSparse">.no</inputport>
+            <inputport name="resultFormat">.none</inputport>
+            <outputport name="result" id="v82" />
+            <functor name="NumberMap">
+                <property key="dff.functor.alias" value="numberMap2894" />
+                <inputport name="map" peerid="v80" />
+                <inputport name="mapNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="CalculateMap">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="random initial value" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="expression">[&#x0A;    i1&#x0A;]</inputport>
+            <inputport name="cellType">.float32</inputport>
+            <inputport name="nullValue">.default</inputport>
+            <inputport name="resultIsSparse">.no</inputport>
+            <inputport name="resultFormat">.none</inputport>
+            <outputport name="result" id="v83" />
+            <functor name="NumberMap">
+                <property key="dff.functor.alias" value="numberMap2894" />
+                <inputport name="map" peerid="v79" />
+                <inputport name="mapNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="CalculateMap">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="random initial value" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="expression">[&#x0A;    i1&#x0A;]</inputport>
+            <inputport name="cellType">.float32</inputport>
+            <inputport name="nullValue">.default</inputport>
+            <inputport name="resultIsSparse">.no</inputport>
+            <inputport name="resultFormat">.none</inputport>
+            <outputport name="result" id="v84" />
+            <functor name="NumberMap">
+                <property key="dff.functor.alias" value="numberMap2894" />
+                <inputport name="map" peerid="v78" />
+                <inputport name="mapNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="CalculateMap">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="random initial value" />
+            <property key="viewer.result" value="yes" />
+            <inputport name="expression">[&#x0A;    0.08&#x0A;]</inputport>
+            <inputport name="cellType">.float32</inputport>
+            <inputport name="nullValue">.default</inputport>
+            <inputport name="resultIsSparse">.no</inputport>
+            <inputport name="resultFormat">.none</inputport>
+            <outputport name="result" id="v85" />
+            <functor name="NumberMap">
+                <property key="dff.functor.alias" value="numberMap2894" />
+                <inputport name="map" peerid="v77" />
+                <inputport name="mapNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.container.collapsed" value="no" />
+        <property key="dff.functor.alias" value="Parametros da vegetacao" />
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Arvores" />
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Incremento pos fogo arvores" />
+                <inputport name="constant">0.05</inputport>
+                <outputport name="object" id="v86" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Incremento natural arvores" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v87" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Decremento natural arvores" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v88" />
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Herbaceas" />
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Incremento natural herbaceas" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v89" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Decremento natural herbaceas" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v90" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Decremento pos fogo herbaceas" />
+                <inputport name="constant">0.51</inputport>
+                <outputport name="object" id="v91" />
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Graminea" />
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Decremento natural graminea" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v92" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Decremento pos fogo graminea" />
+                <inputport name="constant">0.51</inputport>
+                <outputport name="object" id="v93" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Incremento natural graminea" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v94" />
+            </functor>
+        </containerfunctor>
+        <containerfunctor name="Group">
+            <property key="dff.container.collapsed" value="yes" />
+            <property key="dff.functor.alias" value="Arbustos" />
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Incremento pos fogo arbusto" />
+                <inputport name="constant">0.004</inputport>
+                <outputport name="object" id="v95" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Incremento natural arbusto" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v96" />
+            </functor>
+            <functor name="RealValue">
+                <property key="dff.functor.alias" value="Decremento natural arbusto" />
+                <inputport name="constant">0.001</inputport>
+                <outputport name="object" id="v97" />
+            </functor>
+        </containerfunctor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.container.collapsed" value="yes" />
+        <property key="dff.functor.alias" value="Taxas" />
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Taxa de emissao natural" />
+            <inputport name="constant">0.01</inputport>
+            <outputport name="object" id="v98" />
+        </functor>
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Taxa natural de absorcao" />
+            <inputport name="constant">0.01</inputport>
+            <outputport name="object" id="v99" />
+        </functor>
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Taxa oxidacao" />
+            <inputport name="constant">0.87</inputport>
+            <outputport name="object" id="v100" />
+        </functor>
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Taxa de conversao biomasa - carbono" />
+            <inputport name="constant">0.45</inputport>
+            <outputport name="object" id="v101" />
+        </functor>
+    </containerfunctor>
+    <containerfunctor name="Workdir">
+        <property key="dff.container.collapsed" value="no" />
+        <property key="dff.functor.alias" value="workdir2971" />
+        <inputport name="folder">&quot;../tmp&quot;</inputport>
+        <internaloutputport name="workdir" id="v102" />
+        <functor name="SaveTable">
+            <property key="dff.functor.alias" value="saveTable2965" />
+            <inputport name="table" peerid="v55" />
+            <inputport name="filename">&quot;arbusto.csv&quot;</inputport>
+            <inputport name="suffixDigits">2</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir" peerid="v102" />
+        </functor>
+        <functor name="SaveTable">
+            <property key="dff.functor.alias" value="saveTable2965" />
+            <inputport name="table" peerid="v59" />
+            <inputport name="filename">&quot;carbono.csv&quot;</inputport>
+            <inputport name="suffixDigits">2</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir" peerid="v102" />
+        </functor>
+        <functor name="SaveTable">
+            <property key="dff.functor.alias" value="saveTable2965" />
+            <inputport name="table" peerid="v61" />
+            <inputport name="filename">&quot;graminea.csv&quot;</inputport>
+            <inputport name="suffixDigits">2</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir" peerid="v102" />
+        </functor>
+        <functor name="SaveTable">
+            <property key="dff.functor.alias" value="saveTable2965" />
+            <inputport name="table" peerid="v57" />
+            <inputport name="filename">&quot;herbacea.csv&quot;</inputport>
+            <inputport name="suffixDigits">2</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir" peerid="v102" />
+        </functor>
+        <functor name="SaveTable">
+            <property key="dff.functor.alias" value="saveTable2965" />
+            <inputport name="table" peerid="v56" />
+            <inputport name="filename">&quot;arvores.csv&quot;</inputport>
+            <inputport name="suffixDigits">2</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir" peerid="v102" />
+        </functor>
+    </containerfunctor>
+    <containerfunctor name="CalculateRExpression">
+        <property key="dff.container.collapsed" value="no" />
+        <property key="dff.functor.alias" value="Fuel" />
+        <inputport name="expression">&quot;library(ggplot2)&#x0A;library(reshape2)&#x0A;#library(gridExtra)&#x0A;&#x0A;t1$X =NULL&#x0A;t2$X = NULL&#x0A;&#x0A;#f = cbind(t1,t2[,2])&#x0A;#colnames(f) = c(\&quot;Meses\&quot;,\&quot;Value\&quot;)&#x0A;#f_melt = melt(f, id = \&quot;Meses\&quot;)&#x0A;&#x0A;tiff(\&quot;C:\\Users\\iis\\Desktop\\Lucas\\tmp\\plot_fuel.tiff\&quot;, width = 30, height = 20, units = &apos;in&apos;, res = 50)&#x0A;&#x0A;p1 = print(ggplot(t1) +&#x0A; aes(t1[[1]],t1[[2]]) +&#x0A;#geom_point(size = 6, alpha = 1) +&#x0A;#geom_line(lwd = .9) + &#x0A;geom_smooth(method = \&quot;loess\&quot;, se = F) +&#x0A; xlab(\&quot;Months\&quot;) + ylab(\&quot;Fuel Loads\&quot;) +&#x0A; #scale_x_discrete(limits = seq(1,nrow(f_melt),5)) +&#x0A; theme_gray(base_size = 32) +&#x0A; theme(legend.position = \&quot;none\&quot;,&#x0A; legend.title = element_blank(),&#x0A; legend.text=element_text(size=67),&#x0A; # legend.position = c(0.9, 0.2),&#x0A; #legend.key = element_rect(size = 5),&#x0A; #legend.key.size = unit(1.5, &apos;lines&apos;)&#x0A;))&#x0A;dev.off()&#x0A;&#x0A;&#x0A;tiff(\&quot;C:\\Users\\iis\\Desktop\\Lucas\\tmp\\plot_vpd.tiff\&quot;, width = 30, height = 20, units = &apos;in&apos;, res = 50)&#x0A;&#x0A;p2 = print(ggplot(t2) +&#x0A; aes(t2[[1]],t2[[2]]) +&#x0A;geom_col()+&#x0A;#geom_point(size = 6, alpha = 1) +&#x0A;#geom_line(lwd = .9) + &#x0A;#geom_smooth(method = \&quot;loess\&quot;, se = F) +&#x0A; xlab(\&quot;Months\&quot;) + ylab(\&quot;VPD\&quot;) +&#x0A; #scale_x_discrete(limits = seq(1,nrow(f_melt),5)) +&#x0A; theme_gray(base_size = 32) +&#x0A; theme(legend.position = \&quot;none\&quot;,&#x0A; legend.title = element_blank(),&#x0A; legend.text=element_text(size=67),&#x0A; # legend.position = c(0.9, 0.2),&#x0A; #legend.key = element_rect(size = 5),&#x0A; #legend.key.size = unit(1.5, &apos;lines&apos;)&#x0A;))&#x0A;&#x0A;dev.off()&quot;</inputport>
+        <inputport name="treatWarningAsErrors">.no</inputport>
+        <functor name="NumberTable">
+            <property key="dff.functor.alias" value="arvores" />
+            <inputport name="table" peerid="v68" />
+            <inputport name="tableNumber">1</inputport>
+        </functor>
+        <functor name="NumberTable">
+            <property key="dff.functor.alias" value="arbusto" />
+            <inputport name="table" peerid="v71" />
+            <inputport name="tableNumber">2</inputport>
+        </functor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.functor.alias" value="group3001" />
+        <containerfunctor name="CalculateRExpression">
+            <property key="dff.container.collapsed" value="no" />
+            <property key="dff.functor.alias" value="Biomass" />
+            <inputport name="expression">&quot;library(ggplot2)&#x0A;library(reshape2)&#x0A;&#x0A;t1$X =NULL&#x0A;t2$X =NULL&#x0A;t3$X =NULL&#x0A;t4$X =NULL&#x0A;t5$X =NULL&#x0A;&#x0A;f = cbind(t1,t2[,2],t3[,2],t4[,2],t5[,2])&#x0A;colnames(f) = c(\&quot;Meses\&quot;,\&quot;Trees\&quot;,\&quot;Shurbs\&quot;,\&quot;Herbs\&quot;,\&quot;Grasses\&quot;,\&quot;Carbon_released\&quot;)&#x0A;f_melt = melt(f, id = \&quot;Meses\&quot;)&#x0A;&#x0A;tiff(paste0(\&quot;C:\\Users\\iis\\Desktop\\Lucas\\tmp\\\&quot;,s1,\&quot;.tiff\&quot;), width = 30, height = 20, units = &apos;in&apos;, res = 50)&#x0A;print(ggplot(f_melt) +&#x0A; aes(f_melt[[1]],f_melt[[3]]) +&#x0A;# geom_point(size = 3, alpha = 1) +&#x0A;#geom_line(lwd = .9) + &#x0A;geom_smooth(method = \&quot;loess\&quot;, se = F,size=1.5) +&#x0A;geom_vline(xintercept = c(1),&#x0A;&#x09; linetype=\&quot;dotted\&quot;, &#x0A;                color = \&quot;red\&quot;, size=1.5) +&#x0A; xlab(\&quot;Months\&quot;) + ylab(\&quot; Kg/m2 \&quot;) +&#x0A; #scale_x_discrete(limits = seq(1,nrow(f_melt),5)) +&#x0A; theme_minimal(base_size = 50) +&#x0A; theme(legend.position = \&quot;none\&quot;,&#x0A; legend.title = element_blank(),&#x0A; legend.text=element_text(size=90),&#x0A; # legend.position = c(0.9, 0.2),&#x0A; #legend.key = element_rect(size = 5),&#x0A; #legend.key.size = unit(1.5, &apos;lines&apos;)&#x0A;) +&#x0A; facet_wrap(~variable, scales = \&quot;free_y\&quot;))&#x0A;&#x0A;dev.off()&quot;</inputport>
+            <inputport name="treatWarningAsErrors">.no</inputport>
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="carbono" />
+                <inputport name="table" peerid="v59" />
+                <inputport name="tableNumber">5</inputport>
+            </functor>
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="gramineas" />
+                <inputport name="table" peerid="v61" />
+                <inputport name="tableNumber">4</inputport>
+            </functor>
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="herbaceas" />
+                <inputport name="table" peerid="v57" />
+                <inputport name="tableNumber">3</inputport>
+            </functor>
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="arbusto" />
+                <inputport name="table" peerid="v55" />
+                <inputport name="tableNumber">2</inputport>
+            </functor>
+            <functor name="NumberTable">
+                <property key="dff.functor.alias" value="arvores" />
+                <inputport name="table" peerid="v56" />
+                <inputport name="tableNumber">1</inputport>
+            </functor>
+            <functor name="NumberString">
+                <property key="dff.functor.alias" value="numberString2999" />
+                <inputport name="value" peerid="v103" />
+                <inputport name="valueNumber">1</inputport>
+            </functor>
+        </containerfunctor>
+        <functor name="String">
+            <property key="dff.functor.alias" value="string3000" />
+            <inputport name="constant">&quot;single_fire&quot;</inputport>
+            <outputport name="object" id="v103" />
+        </functor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.container.collapsed" value="no" />
+        <property key="dff.functor.alias" value="Climatic variables" />
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="VPD" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/vpd.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v104" />
+        </functor>
+        <functor name="LoadLookupTable">
+            <property key="dff.functor.alias" value="VPD" />
+            <property key="dff.functor.comment" value="VPD" />
+            <inputport name="filename">&quot;vpd_table.csv&quot;</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="table" id="v105" />
+        </functor>
+        <functor name="LoadMap">
+            <property key="dff.functor.alias" value="Vento" />
+            <inputport name="filename">&quot;../tmp/estoques_modelo_carbono_processos/vento.tif&quot;</inputport>
+            <inputport name="nullValue">.none</inputport>
+            <inputport name="loadAsSparse">.no</inputport>
+            <inputport name="suffixDigits">0</inputport>
+            <inputport name="step">.none</inputport>
+            <inputport name="workdir">.none</inputport>
+            <outputport name="map" id="v106" />
+        </functor>
+    </containerfunctor>
+    <containerfunctor name="Group">
+        <property key="dff.container.collapsed" value="yes" />
+        <property key="dff.functor.alias" value="taxas de queima" />
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Biomassa de arbusto disponivel queima (taxa)" />
+            <inputport name="constant">0.001</inputport>
+            <outputport name="object" id="v107" />
+        </functor>
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Biomassa de graminea disponivel queima (taxa)" />
+            <inputport name="constant">0.99</inputport>
+            <outputport name="object" id="v108" />
+        </functor>
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Biomassa de arvores disponivel queima (taxa)" />
+            <inputport name="constant">0.01</inputport>
+            <outputport name="object" id="v109" />
+        </functor>
+        <functor name="RealValue">
+            <property key="dff.functor.alias" value="Biomassa de herbacea disponivel queima (taxa)" />
+            <inputport name="constant">0.99</inputport>
+            <outputport name="object" id="v110" />
+        </functor>
+    </containerfunctor>
+</script>
