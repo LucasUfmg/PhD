@@ -1,0 +1,264 @@
+######### Fire dynamics in the ################
+######### Cerrado - Amazon frontier ############
+######### Lucas RSS 04.06.2019 ################
+
+# install necessary packages
+install.packages("ggplot2")
+install.packages("rgdal")
+#install.packages("psych")
+
+#----------------------------
+#library
+require(psych)  
+require(ggplot2)
+require(rgdal)
+require(raster)
+require(tidyverse)
+require(gridExtra)
+# ---------------------------
+setwd("D:\\Lucas\\2-fire\\outputs\\new_analysis_fire_over_all_months\\tabelas")
+# load cerrado fire table 
+cer = read.csv("fire_cerrado/fire_cerrado.csv", header = T)
+cer$X = NULL
+
+# load cerrado agr table
+cer.agr = read.csv("agr_cerrado/forest_agr_cerrado.csv", header = T)
+cer.agr$X = NULL
+
+#load cerrado frontier age
+cer.age = read.csv("frontier_age_cerrado/frontier_age_cerrado.csv", header = T)
+cer.age$X = NULL
+
+colnames(cer.age) = c("Municipality","Frontier")
+# load amz fire table (Not ready yet)
+#amz = read.csv("tables/fire_amz.csv", header = T)
+#amz$X = NULL
+
+setwd("C:\\Users\\lrodrigues\\Downloads\\municipios_2010")
+# load shp with municipalities of study area
+shp = shapefile("municipios_2010.shp")
+head(shp@data)
+
+# pre processing municipality shp
+# crop for study area
+shp.sub = subset(shp, shp$uf == "AC"|
+                   shp$uf == "RO"|
+                   shp$uf == "MT"|
+                   shp$uf == "GO"|
+                   shp$uf == "BA"|
+                   shp$uf == "TO"|
+                   shp$uf == "PA"|
+                   shp$uf == "MA"|
+                   shp$uf == "PI")
+
+# Only necessary data from shp
+shp.sub = shp.sub[,c(1,2,3,7)] 
+
+# check study area
+plot(shp.sub)
+
+# -------------------------------------------  
+# Cerrado Analysis:
+
+# Merge Cerrado fire and agriculture table
+
+cer.fire.agr = merge(cer,cer.agr, by.x = c("Year.","Municipality.","Category."),
+                    by.y = c("Year.","Municipality.","Category.") ,
+                    all.x = F, all.y = F )
+
+
+# Merge Cerrado fire/agriculture with frontier
+
+cer.fire.agr.frontier = merge(cer.fire.agr,cer.age, by.x = c("Municipality."),
+                    by.y = c("Municipality") ,
+                    all.x = T, all.y = F ) # all.x is True to guarantee there`s no miscalculation in the municipalities`
+
+
+# Merge Cerrado fire and agriculture table with shp to have actual names 
+# of Municipalities and States
+
+shp.sub.data = data.frame(id=rownames(shp.sub@data),
+                          MUN=  shp.sub@data$nome,
+                          EST = shp.sub@data$uf,
+                          IBGE = shp.sub@data$codigo_ibg)
+
+shp.sub.data$id = as.character(shp.sub$id)
+
+shp.sub.data.final = merge(shp.sub.data,cer.fire.agr.frontier,by.x="IBGE",by.y="Municipality.", all.x=F, all.y = F)
+
+# merge shp.sub.data.final with cer.agr
+#shp.sub.data.final = merge(shp.sub.data.final,cer.agr,by.x="IBGE",by.y="Municipality.", all.x=F)
+
+
+# Simply Mapbiomas classes only by what is forest and savanna 
+shp.sub.data.final.lu = subset(shp.sub.data.final, 
+                               shp.sub.data.final$Category. == 3 | 
+                                 shp.sub.data.final$Category. == 4 |
+                                 shp.sub.data.final$Category. == 5 |
+                                 shp.sub.data.final$Category. == 14|
+                                 shp.sub.data.final$Category. == 15| 
+                                 shp.sub.data.final$Category. == 18|
+                                 shp.sub.data.final$Category. == 21)
+
+# Correlation Fire ~ Agriculture
+
+# Spread data by state and vegetation
+shp.sub.data.final.lu = shp.sub.data.final.lu[,c(1,2,3,4,5,6,7,10,13)]
+colnames(shp.sub.data.final.lu) = c("IBGE","id","Municipality","State","Year",
+                                    "Category","Hotpixel_Amount","LandUseType_Amount","Frontier Age")
+
+# Add variable with simpler land classes - only forest (3,4,5) and savanna
+
+shp.sub.data.final.lu$LandUse = ifelse(shp.sub.data.final.lu$Category == 3 |
+                                         shp.sub.data.final.lu$Category== 4| 
+                                         shp.sub.data.final.lu$Category == 5,
+                                       "Forest","Savanna")
+
+shp.sub.data.final.lu = subset(shp.sub.data.final.lu,
+                                      shp.sub.data.final.lu$State == "BA" |
+                                        shp.sub.data.final.lu$State == "GO" |
+                                        shp.sub.data.final.lu$State == "MA" |
+                                        shp.sub.data.final.lu$State == "MT" |
+                                        shp.sub.data.final.lu$State == "PI" |
+                                        shp.sub.data.final.lu$State == "TO")
+
+# Categorize Frontier 
+shp.sub.data.final.lu.age = shp.sub.data.final.lu %>%
+  mutate(Frontier_Age_levels = ifelse(shp.sub.data.final.lu$`Frontier Age`>12 & shp.sub.data.final.lu$`Frontier Age` <=16,"Most Remote deforestion (13 - 16 years)",
+                             ifelse(shp.sub.data.final.lu$`Frontier Age` >8 & shp.sub.data.final.lu$`Frontier Age` <=12,"Remote deforestion (9 - 12 years)",
+                                    ifelse((shp.sub.data.final.lu$`Frontier Age` >4 & shp.sub.data.final.lu$`Frontier Age` <=8),"Recent deforestion (5 - 8 years)",
+                                           ifelse(shp.sub.data.final.lu$`Frontier Age` >=0 & shp.sub.data.final.lu$`Frontier Age` <=4,"Most Recent deforestion (1 - 4 years)",
+                                                  ifelse(shp.sub.data.final.lu$`Frontier Age` == -9999, "Undeforested",
+                                                         shp.sub.data.final.lu$`Frontier Age`))))))
+
+
+# Plot fire ~ agriculture relation
+
+shp.sub.data.final.lu.f = subset(shp.sub.data.final.lu.age,shp.sub.data.final.lu.age$LandUse == "Forest")
+shp.sub.data.final.lu.s = subset(shp.sub.data.final.lu.age,shp.sub.data.final.lu.age$LandUse == "Savanna")
+
+# Fogo em floresta
+p1 = ggplot(shp.sub.data.final.lu.f) +
+  aes(LandUseType_Amount,Hotpixel_Amount, colour = as.factor(Frontier_Age_levels)) +
+  geom_point(aes(group = as.factor(Frontier_Age_levels)),size = 3, alpha = 0.05) +
+  geom_smooth(method = "loess", se = F) +
+  ylab("Hotpixels") +
+  xlab("Forested pixels\n(MapBiomas)") +
+  #ggtitle("Active fire in forests") +
+  #scale_colour_manual(values = c("darkgreen","orange")) +
+  #scale_x_discrete(limits = seq(2003,2016,1)) +
+  theme_minimal(base_size = 17) +
+  theme(
+    #legend.position = c(0, 1), 
+    #legend.justification = c(0, 1), 
+    #legend.background = theme_rect(colour = NA, fill = "white"),
+    legend.title = element_blank(),
+    legend.position = "top",
+    #strip.background = element_blank(),
+    #strip.text.x = element_blank(),
+    axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(shp.sub.data.final.lu.f$State)
+
+
+# Fogo em savanna
+p2 = ggplot(shp.sub.data.final.lu.s) +
+  aes(LandUseType_Amount,Hotpixel_Amount, colour = as.factor(Frontier_Age_levels)) +
+  geom_point(aes(group = as.factor(Frontier_Age_levels)),size = 3, alpha = 0.05) +
+  geom_smooth(method = "loess", se = F) +
+  ylab("Hotpixels") +
+  xlab("Non Forested pixels\n(MapBiomas)") +
+  xlim(c(0,40000)) +
+  ylim(c(0,15000)) +
+ # ggtitle("Active fire in savannas") +
+  #scale_colour_manual(values = c("darkgreen","orange")) +
+  #scale_x_discrete(limits = seq(2003,2016,1)) +
+  theme_minimal(base_size = 17) +
+  theme(
+    legend.position = "none", 
+    #legend.justification = c(0, 1), 
+    #legend.background = theme_rect(colour = NA, fill = "white"),
+    legend.title = element_blank(),
+    #strip.background = element_blank(),
+    #strip.text.x = element_blank(),
+    axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(shp.sub.data.final.lu.s$State)
+
+
+
+grid.arrange(p1,p2, ncol = 1)
+
+# Fogo separado por savana e floresta 
+
+ggplot(shp.sub.data.final.lu.age,
+       aes(x = Year , y = Hotpixel_Amount/LandUseType_Amount, 
+           colour = LandUse)) +
+  geom_point(aes(group = as.factor(LandUse)),size = 3, alpha = 0.05) +
+  geom_smooth(method = "loess", se = F) +
+  ylab("Active Fire (%)") +
+  xlab("Year") +
+ # xlim(c(0,40000)) +
+  #ylim(c(0,15000)) +
+ # ggtitle("Active fire in savannas") +
+  scale_colour_manual(values = c("darkgreen","orange")) +
+  scale_x_discrete(limits = seq(2003,2016,1)) +
+  theme_minimal(base_size = 17) +
+  theme(
+    #legend.position = "none", 
+    #legend.justification = c(0, 1), 
+    #legend.background = theme_rect(colour = NA, fill = "white"),
+    legend.title = element_blank(),
+    #strip.background = element_blank(),
+    #strip.text.x = element_blank(),
+    axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(shp.sub.data.final.lu.age$State)
+####
+shp.sub.data.final.lu.age.agr.only = subset(shp.sub.data.final.lu.age,
+                                            shp.sub.data.final.lu.age$LandUse == "Savanna")
+ggplot(shp.sub.data.final.lu.age.agr.only,
+       aes(x = LandUseType_Amount , y = Hotpixel_Amount, 
+           colour = LandUse)) +
+  geom_point(aes(group = as.factor(LandUse)),size = 3, alpha = 0.05) +
+  geom_smooth(method = "loess", se = F) +
+  ylab("Fogo em savana") +
+  xlab("Agropecuaria") +
+ # xlim(c(0,40000)) +
+  #ylim(c(0,15000)) +
+ # ggtitle("Active fire in savannas") +
+  scale_colour_manual(values = c("darkgreen","orange")) +
+  #scale_x_discrete(limits = seq(2003,2016,1)) +
+  theme_minimal(base_size = 17) +
+  theme(
+    legend.position = "none", 
+    #legend.justification = c(0, 1), 
+    #legend.background = theme_rect(colour = NA, fill = "white"),
+    legend.title = element_blank(),
+    #strip.background = element_blank(),
+    #strip.text.x = element_blank(),
+    axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(shp.sub.data.final.lu.age.agr.only$State)
+
+
+♣#####################################
+
+
+
+## Plot 
+ggplot(shp.sub.data.final.lu.savana.st) +
+  aes(Year,Agriculture_Amount) +
+  geom_point() +
+  geom_smooth(method = "loess") +
+  #scale_colour_manual(values = c("darkgreen","orange")) +
+  #scale_x_discrete(limits = seq(2003,2016,1)) +
+  theme_minimal(base_size = 22) +
+  theme(
+    #legend.position = c(0, 1), 
+    #legend.justification = c(0, 1), 
+    #legend.background = theme_rect(colour = NA, fill = "white"),
+    legend.title = element_blank(),
+    #strip.background = element_blank(),
+    #strip.text.x = element_blank(),
+    axis.text.x = element_text(angle = 90, hjust = 1)) +
+  facet_wrap(shp.sub.data.final.lu.savana.st$State)
+
+# Plot with 
+
